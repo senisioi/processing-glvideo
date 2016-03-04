@@ -346,18 +346,18 @@ JNIEXPORT jlong JNICALL Java_processing_glvideo_GLVideo_gstreamer_1open
     // start paused
     gst_element_set_state (state->pipeline, GST_STATE_PAUSED);
 
-    return (jlong) state;
+    return (intptr_t) state;
   }
 
 JNIEXPORT jboolean JNICALL Java_processing_glvideo_GLVideo_gstreamer_1available
   (JNIEnv * env, jobject obj, jlong handle) {
-    GLVIDEO_STATE_T *state = (GLVIDEO_STATE_T *) handle;
+    GLVIDEO_STATE_T *state = (GLVIDEO_STATE_T *)(intptr_t) handle;
     return (state->next_tex && state->next_tex != state->current_tex);
   }
 
 JNIEXPORT jint JNICALL Java_processing_glvideo_GLVideo_gstreamer_1getFrame
   (JNIEnv * env, jobject obj, jlong handle) {
-    GLVIDEO_STATE_T *state = (GLVIDEO_STATE_T *) handle;
+    GLVIDEO_STATE_T *state = (GLVIDEO_STATE_T *)(intptr_t) handle;
     g_mutex_lock (&state->buffer_lock);
     if (likely(state->current_buffer != NULL)) {
       gst_buffer_unref (state->current_buffer);
@@ -373,27 +373,27 @@ JNIEXPORT jint JNICALL Java_processing_glvideo_GLVideo_gstreamer_1getFrame
 
 JNIEXPORT void JNICALL Java_processing_glvideo_GLVideo_gstreamer_1startPlayback
   (JNIEnv * env, jobject obj, jlong handle) {
-    GLVIDEO_STATE_T *state = (GLVIDEO_STATE_T *) handle;
+    GLVIDEO_STATE_T *state = (GLVIDEO_STATE_T *)(intptr_t) handle;
 
     gst_element_set_state (state->pipeline, GST_STATE_PLAYING);
   }
 
 JNIEXPORT void JNICALL Java_processing_glvideo_GLVideo_gstreamer_1stopPlayback
   (JNIEnv * env, jobject obj, jlong handle) {
-    GLVIDEO_STATE_T *state = (GLVIDEO_STATE_T *) handle;
+    GLVIDEO_STATE_T *state = (GLVIDEO_STATE_T *)(intptr_t) handle;
 
     gst_element_set_state (state->pipeline, GST_STATE_PAUSED);
   }
 
 JNIEXPORT void JNICALL Java_processing_glvideo_GLVideo_gstreamer_1setLooping
   (JNIEnv * env, jobject obj, jlong handle, jboolean looping) {
-    GLVIDEO_STATE_T *state = (GLVIDEO_STATE_T *) handle;
+    GLVIDEO_STATE_T *state = (GLVIDEO_STATE_T *)(intptr_t) handle;
     state->looping = looping;
   }
 
 JNIEXPORT jboolean JNICALL Java_processing_glvideo_GLVideo_gstreamer_1seek
   (JNIEnv * env, jobject obj, jlong handle, jfloat sec) {
-    GLVIDEO_STATE_T *state = (GLVIDEO_STATE_T *) handle;
+    GLVIDEO_STATE_T *state = (GLVIDEO_STATE_T *)(intptr_t) handle;
     GstEvent *event;
 
     event = gst_event_new_seek (state->rate,
@@ -405,7 +405,7 @@ JNIEXPORT jboolean JNICALL Java_processing_glvideo_GLVideo_gstreamer_1seek
 
 JNIEXPORT jboolean JNICALL Java_processing_glvideo_GLVideo_gstreamer_1setSpeed
   (JNIEnv * env, jobject obj, jlong handle, jfloat rate) {
-    GLVIDEO_STATE_T *state = (GLVIDEO_STATE_T *) handle;
+    GLVIDEO_STATE_T *state = (GLVIDEO_STATE_T *)(intptr_t) handle;
     GstEvent *event;
     gint64 start = 0;
     gint64 stop = 0;
@@ -434,7 +434,7 @@ JNIEXPORT jboolean JNICALL Java_processing_glvideo_GLVideo_gstreamer_1setSpeed
 
 JNIEXPORT jfloat JNICALL Java_processing_glvideo_GLVideo_gstreamer_1getDuration
   (JNIEnv * env, jobject obj, jlong handle) {
-    GLVIDEO_STATE_T *state = (GLVIDEO_STATE_T *) handle;
+    GLVIDEO_STATE_T *state = (GLVIDEO_STATE_T *)(intptr_t) handle;
     gint64 duration = 0;
 
     gst_element_query_duration (state->pipeline, GST_FORMAT_TIME, &duration);
@@ -443,7 +443,7 @@ JNIEXPORT jfloat JNICALL Java_processing_glvideo_GLVideo_gstreamer_1getDuration
 
 JNIEXPORT jfloat JNICALL Java_processing_glvideo_GLVideo_gstreamer_1getPosition
   (JNIEnv * env, jobject obj, jlong handle) {
-    GLVIDEO_STATE_T *state = (GLVIDEO_STATE_T *) handle;
+    GLVIDEO_STATE_T *state = (GLVIDEO_STATE_T *)(intptr_t) handle;
     gint64 position = 0;
 
     gst_element_query_position (state->vsink, GST_FORMAT_TIME, &position);
@@ -452,7 +452,7 @@ JNIEXPORT jfloat JNICALL Java_processing_glvideo_GLVideo_gstreamer_1getPosition
 
 JNIEXPORT jint JNICALL Java_processing_glvideo_GLVideo_gstreamer_1getWidth
   (JNIEnv * env, jobject obj, jlong handle) {
-    GLVIDEO_STATE_T *state = (GLVIDEO_STATE_T *) handle;
+    GLVIDEO_STATE_T *state = (GLVIDEO_STATE_T *)(intptr_t) handle;
     const GstStructure *str;
     int width = 0;
 
@@ -466,7 +466,7 @@ JNIEXPORT jint JNICALL Java_processing_glvideo_GLVideo_gstreamer_1getWidth
 
 JNIEXPORT jint JNICALL Java_processing_glvideo_GLVideo_gstreamer_1getHeight
   (JNIEnv * env, jobject obj, jlong handle) {
-    GLVIDEO_STATE_T *state = (GLVIDEO_STATE_T *) handle;
+    GLVIDEO_STATE_T *state = (GLVIDEO_STATE_T *)(intptr_t) handle;
     const GstStructure *str;
     int height = 0;
 
@@ -480,7 +480,7 @@ JNIEXPORT jint JNICALL Java_processing_glvideo_GLVideo_gstreamer_1getHeight
 
 JNIEXPORT jfloat JNICALL Java_processing_glvideo_GLVideo_gstreamer_1getFramerate
   (JNIEnv * env, jobject obj, jlong handle) {
-    GLVIDEO_STATE_T *state = (GLVIDEO_STATE_T *) handle;
+    GLVIDEO_STATE_T *state = (GLVIDEO_STATE_T *)(intptr_t) handle;
     const GstStructure *str;
     double fps = 0.0;
 
@@ -495,7 +495,7 @@ JNIEXPORT jfloat JNICALL Java_processing_glvideo_GLVideo_gstreamer_1getFramerate
 
 JNIEXPORT void JNICALL Java_processing_glvideo_GLVideo_gstreamer_1close
   (JNIEnv * env, jobject obj, jlong handle) {
-    GLVIDEO_STATE_T *state = (GLVIDEO_STATE_T *) handle;
+    GLVIDEO_STATE_T *state = (GLVIDEO_STATE_T *)(intptr_t) handle;
 
     // stop pipeline
     gst_element_set_state (state->pipeline, GST_STATE_NULL);
