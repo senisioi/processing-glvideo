@@ -36,11 +36,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #define GST_USE_UNSTABLE_API
+#include <gst/gst.h>
 #include <gst/gl/gl.h>
 #include <gst/gl/egl/gstgldisplay_egl.h>
+#include <stdbool.h>
 #include "impl.h"
 #include "iface.h"
 
+#define likely(x)   __builtin_expect((x),1)
 #define unlikely(x) __builtin_expect((x),0)
 
 typedef enum
@@ -72,6 +75,7 @@ handle_buffer (GLVIDEO_STATE_T * state, GstBuffer * buffer)
     gst_buffer_unref (state->next_buffer);
     state->next_buffer = NULL;
   }
+  state->next_tex = 0;
   // TODO: not necessary to do glDeleteTextures()?
 
   GstMemory *mem = gst_buffer_peek_memory (buffer, 0);
@@ -82,8 +86,8 @@ handle_buffer (GLVIDEO_STATE_T * state, GstBuffer * buffer)
     return;
   }
 
-  state->next_tex = ((GstGLMemory *) mem)->tex_id;
   state->next_buffer = gst_buffer_ref (buffer);
+  state->next_tex = ((GstGLMemory *) mem)->tex_id;
   g_mutex_unlock (&state->buffer_lock);
 }
 
@@ -121,9 +125,9 @@ events_cb (GstPad * pad, GstPadProbeInfo * probe_info, gpointer user_data)
         gst_caps_ref (state->caps);
       break;
     }
-    case GST_EVENT_EOS:
-      fprintf (stderr, "GLVideo: End of stream in GstPadProbeReturn\n");
-      break;
+    // this is handled in eos_cb
+    //case GST_EVENT_EOS:
+    //  break;
     default:
       break;
   }
@@ -190,7 +194,15 @@ static void
 eos_cb (GstBus * bus, GstMessage * msg, GLVIDEO_STATE_T * state)
 {
   if (GST_MESSAGE_SRC (msg) == GST_OBJECT (state->pipeline)) {
-    fprintf (stderr, "GLVideo: End of stream in eos_cb\n");
+    if (state->looping) {
+      GstEvent *event;
+      event = gst_event_new_seek (state->rate,
+        GST_FORMAT_TIME, GST_SEEK_FLAG_FLUSH | GST_SEEK_FLAG_KEY_UNIT,
+        GST_SEEK_TYPE_SET, 0, GST_SEEK_TYPE_SET, GST_CLOCK_TIME_NONE);
+      if (!gst_element_send_event (state->vsink, event)) {
+        g_printerr ("GLVideo: Error rewinding video\n");
+      }
+    }
   }
 }
 
@@ -277,6 +289,8 @@ JNIEXPORT jboolean JNICALL Java_processing_glvideo_GLVideo_gstreamer_1init
     // start GLib main loop in a separate thread
     thread = g_thread_new ("glvideo-mainloop", glvideo_mainloop, NULL);
 
+    // TODO: add note re gpu_mem
+
   	return JNI_TRUE;
   }
 
@@ -287,6 +301,7 @@ JNIEXPORT jlong JNICALL Java_processing_glvideo_GLVideo_gstreamer_1open
       return 0L;
     }
     memset (state, 0, sizeof (*state));
+    state->rate = 1.0f;
 
     // setup EGL context sharing
     state->gst_display = gst_gl_display_egl_new_with_egl_display (display);
@@ -333,8 +348,8 @@ JNIEXPORT jlong JNICALL Java_processing_glvideo_GLVideo_gstreamer_1open
     */
     gst_object_unref (bus);
 
-    /* Make player start playing */
-    gst_element_set_state (state->pipeline, GST_STATE_PLAYING);
+    // start paused
+    gst_element_set_state (state->pipeline, GST_STATE_PAUSED);
 
     return (jlong) state;
   }
@@ -349,7 +364,7 @@ JNIEXPORT jint JNICALL Java_processing_glvideo_GLVideo_gstreamer_1getFrame
   (JNIEnv * env, jobject obj, jlong handle) {
     GLVIDEO_STATE_T *state = (GLVIDEO_STATE_T *) handle;
     g_mutex_lock (&state->buffer_lock);
-    if (state->current_buffer) {
+    if (likely(state->current_buffer != NULL)) {
       gst_buffer_unref (state->current_buffer);
     }
     // TODO: not necessary to do glDeleteTextures()?
@@ -359,6 +374,128 @@ JNIEXPORT jint JNICALL Java_processing_glvideo_GLVideo_gstreamer_1getFrame
     state->next_tex = 0;
     g_mutex_unlock (&state->buffer_lock);
     return state->current_tex;
+  }
+
+JNIEXPORT void JNICALL Java_processing_glvideo_GLVideo_gstreamer_1startPlayback
+  (JNIEnv * env, jobject obj, jlong handle) {
+    GLVIDEO_STATE_T *state = (GLVIDEO_STATE_T *) handle;
+
+    gst_element_set_state (state->pipeline, GST_STATE_PLAYING);
+  }
+
+JNIEXPORT void JNICALL Java_processing_glvideo_GLVideo_gstreamer_1stopPlayback
+  (JNIEnv * env, jobject obj, jlong handle) {
+    GLVIDEO_STATE_T *state = (GLVIDEO_STATE_T *) handle;
+
+    gst_element_set_state (state->pipeline, GST_STATE_PAUSED);
+  }
+
+JNIEXPORT void JNICALL Java_processing_glvideo_GLVideo_gstreamer_1setLooping
+  (JNIEnv * env, jobject obj, jlong handle, jboolean looping) {
+    GLVIDEO_STATE_T *state = (GLVIDEO_STATE_T *) handle;
+    state->looping = looping;
+  }
+
+JNIEXPORT jboolean JNICALL Java_processing_glvideo_GLVideo_gstreamer_1seek
+  (JNIEnv * env, jobject obj, jlong handle, jfloat sec) {
+    GLVIDEO_STATE_T *state = (GLVIDEO_STATE_T *) handle;
+    GstEvent *event;
+
+    event = gst_event_new_seek (state->rate,
+      GST_FORMAT_TIME, GST_SEEK_FLAG_FLUSH | GST_SEEK_FLAG_KEY_UNIT,
+      GST_SEEK_TYPE_SET, (gint64)(sec * 1000000000), GST_SEEK_TYPE_SET,
+      GST_CLOCK_TIME_NONE);
+    return gst_element_send_event (state->vsink, event);
+  }
+
+JNIEXPORT jboolean JNICALL Java_processing_glvideo_GLVideo_gstreamer_1setSpeed
+  (JNIEnv * env, jobject obj, jlong handle, jfloat rate) {
+    GLVIDEO_STATE_T *state = (GLVIDEO_STATE_T *) handle;
+    GstEvent *event;
+    gint64 start = 0;
+    gint64 stop = 0;
+
+    if (rate == state->rate) {
+      return true;
+    }
+    if (0 < rate) {
+      gst_element_query_position (state->vsink, GST_FORMAT_TIME, &start);
+      stop = GST_CLOCK_TIME_NONE;
+    } else {
+      /*
+      start = 0;
+      gst_element_query_position (state->vsink, GST_FORMAT_TIME, &stop);
+      */
+      // this currently freezes the application
+      return false;
+    }
+    state->rate = rate;
+    event = gst_event_new_seek (state->rate,
+      GST_FORMAT_TIME, GST_SEEK_FLAG_FLUSH,
+      GST_SEEK_TYPE_SET, start, GST_SEEK_TYPE_SET,
+      stop);
+    return gst_element_send_event (state->vsink, event);
+  }
+
+JNIEXPORT jfloat JNICALL Java_processing_glvideo_GLVideo_gstreamer_1getDuration
+  (JNIEnv * env, jobject obj, jlong handle) {
+    GLVIDEO_STATE_T *state = (GLVIDEO_STATE_T *) handle;
+    gint64 duration = 0;
+
+    gst_element_query_duration (state->pipeline, GST_FORMAT_TIME, &duration);
+    return duration/1000000000.0f;
+  }
+
+JNIEXPORT jfloat JNICALL Java_processing_glvideo_GLVideo_gstreamer_1getPosition
+  (JNIEnv * env, jobject obj, jlong handle) {
+    GLVIDEO_STATE_T *state = (GLVIDEO_STATE_T *) handle;
+    gint64 position = 0;
+
+    gst_element_query_position (state->vsink, GST_FORMAT_TIME, &position);
+    return position/1000000000.0f;
+  }
+
+JNIEXPORT jint JNICALL Java_processing_glvideo_GLVideo_gstreamer_1getWidth
+  (JNIEnv * env, jobject obj, jlong handle) {
+    GLVIDEO_STATE_T *state = (GLVIDEO_STATE_T *) handle;
+    const GstStructure *str;
+    int width = 0;
+
+    if (!state->caps || !gst_caps_is_fixed (state->caps)) {
+      return 0;
+    }
+    str = gst_caps_get_structure (state->caps, 0);
+    gst_structure_get_int (str, "width", &width);
+    return width;
+  }
+
+JNIEXPORT jint JNICALL Java_processing_glvideo_GLVideo_gstreamer_1getHeight
+  (JNIEnv * env, jobject obj, jlong handle) {
+    GLVIDEO_STATE_T *state = (GLVIDEO_STATE_T *) handle;
+    const GstStructure *str;
+    int height = 0;
+
+    if (!state->caps || !gst_caps_is_fixed (state->caps)) {
+      return 0;
+    }
+    str = gst_caps_get_structure (state->caps, 0);
+    gst_structure_get_int (str, "height", &height);
+    return height;
+  }
+
+JNIEXPORT jfloat JNICALL Java_processing_glvideo_GLVideo_gstreamer_1getFramerate
+  (JNIEnv * env, jobject obj, jlong handle) {
+    GLVIDEO_STATE_T *state = (GLVIDEO_STATE_T *) handle;
+    const GstStructure *str;
+    double fps = 0.0;
+
+    if (!state->caps || !gst_caps_is_fixed (state->caps)) {
+      return 0.0f;
+    }
+    str = gst_caps_get_structure (state->caps, 0);
+    // TODO: doesn't work
+    gst_structure_get_double (str, "framerate", &fps);
+    return (float)fps;
   }
 
 JNIEXPORT void JNICALL Java_processing_glvideo_GLVideo_gstreamer_1close

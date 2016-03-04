@@ -1,8 +1,6 @@
 #ifndef GLUE_H
 #define GLUE_H
 
-#include <gst/gst.h>
-
 typedef struct {
   GstElement *pipeline;
   GstElement *vsink;
@@ -17,6 +15,9 @@ typedef struct {
   GLuint current_tex;
   GstBuffer *next_buffer;
   GLuint next_tex;
+
+  bool looping;
+  float rate;
 } GLVIDEO_STATE_T;
 
 #endif

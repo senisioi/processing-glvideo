@@ -86,6 +86,88 @@ public class GLVideo {
     }
   }
 
+  public void play() {
+    if (handle != 0) {
+      gstreamer_setLooping(handle, false);
+      gstreamer_startPlayback(handle);
+    }
+  }
+
+  public void loop() {
+    if (handle != 0) {
+      gstreamer_setLooping(handle, true);
+      gstreamer_startPlayback(handle);
+    }
+  }
+
+  public void noLoop() {
+    if (handle != 0) {
+      gstreamer_setLooping(handle, false);
+    }
+  }
+
+  public void jump(float sec) {
+    if (handle != 0) {
+      if (!gstreamer_seek(handle, sec)) {
+        System.err.println("Cannot jump to " + sec);
+      }
+    }
+  }
+
+  public void speed(float rate) {
+    if (handle != 0) {
+      if (!gstreamer_setSpeed(handle, rate)) {
+        System.err.println("Cannot set speed to to " + rate);
+      }
+    }
+  }
+
+  public void pause() {
+    if (handle != 0) {
+      gstreamer_stopPlayback(handle);
+    }
+  }
+
+  public float duration() {
+    if (handle == 0) {
+      return 0.0f;
+    } else {
+      return gstreamer_getDuration(handle);
+    }
+  }
+
+  public float time() {
+    if (handle == 0) {
+      return 0.0f;
+    } else {
+      return gstreamer_getPosition(handle);
+    }
+  }
+
+  public int width() {
+    if (handle == 0) {
+      return 0;
+    } else {
+      return gstreamer_getWidth(handle);
+    }
+  }
+
+  public int height() {
+    if (handle == 0) {
+      return 0;
+    } else {
+      return gstreamer_getHeight(handle);
+    }
+  }
+
+  public float frameRate() {
+    if (handle == 0) {
+      return 0.0f;
+    } else {
+      return gstreamer_getFramerate(handle);
+    }
+  }
+
   public void close() {
     if (handle != 0) {
       gstreamer_close(handle);
@@ -98,5 +180,15 @@ public class GLVideo {
   private native long gstreamer_open(String fn_or_uri);
   private native boolean gstreamer_available(long handle);
   private native int gstreamer_getFrame(long handle);
+  private native void gstreamer_startPlayback(long handle);
+  private native void gstreamer_stopPlayback(long handle);
+  private native void gstreamer_setLooping(long handle, boolean looping);
+  private native boolean gstreamer_seek(long handle, float sec);
+  private native boolean gstreamer_setSpeed(long handle, float rate);
+  private native float gstreamer_getDuration(long handle);
+  private native float gstreamer_getPosition(long handle);
+  private native int gstreamer_getWidth(long handle);
+  private native int gstreamer_getHeight(long handle);
+  private native float gstreamer_getFramerate(long handle);
   private native void gstreamer_close(long handle);
 }

@@ -7,7 +7,7 @@ GLVideo video;
 void setup() {
   size(400, 400, P3D);
   video = new GLVideo(this, "big_buck_bunny_480p_h264.mov");
-  frameRate(24);
+  video.loop();
 }
 
 void draw() {

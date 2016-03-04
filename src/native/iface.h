@@ -41,6 +41,86 @@ JNIEXPORT jint JNICALL Java_processing_glvideo_GLVideo_gstreamer_1getFrame
 
 /*
  * Class:     processing_glvideo_GLVideo
+ * Method:    gstreamer_startPlayback
+ * Signature: (J)V
+ */
+JNIEXPORT void JNICALL Java_processing_glvideo_GLVideo_gstreamer_1startPlayback
+  (JNIEnv *, jobject, jlong);
+
+/*
+ * Class:     processing_glvideo_GLVideo
+ * Method:    gstreamer_stopPlayback
+ * Signature: (J)V
+ */
+JNIEXPORT void JNICALL Java_processing_glvideo_GLVideo_gstreamer_1stopPlayback
+  (JNIEnv *, jobject, jlong);
+
+/*
+ * Class:     processing_glvideo_GLVideo
+ * Method:    gstreamer_setLooping
+ * Signature: (JZ)V
+ */
+JNIEXPORT void JNICALL Java_processing_glvideo_GLVideo_gstreamer_1setLooping
+  (JNIEnv *, jobject, jlong, jboolean);
+
+/*
+ * Class:     processing_glvideo_GLVideo
+ * Method:    gstreamer_seek
+ * Signature: (JF)Z
+ */
+JNIEXPORT jboolean JNICALL Java_processing_glvideo_GLVideo_gstreamer_1seek
+  (JNIEnv *, jobject, jlong, jfloat);
+
+/*
+ * Class:     processing_glvideo_GLVideo
+ * Method:    gstreamer_setSpeed
+ * Signature: (JF)Z
+ */
+JNIEXPORT jboolean JNICALL Java_processing_glvideo_GLVideo_gstreamer_1setSpeed
+  (JNIEnv *, jobject, jlong, jfloat);
+
+/*
+ * Class:     processing_glvideo_GLVideo
+ * Method:    gstreamer_getDuration
+ * Signature: (J)F
+ */
+JNIEXPORT jfloat JNICALL Java_processing_glvideo_GLVideo_gstreamer_1getDuration
+  (JNIEnv *, jobject, jlong);
+
+/*
+ * Class:     processing_glvideo_GLVideo
+ * Method:    gstreamer_getPosition
+ * Signature: (J)F
+ */
+JNIEXPORT jfloat JNICALL Java_processing_glvideo_GLVideo_gstreamer_1getPosition
+  (JNIEnv *, jobject, jlong);
+
+/*
+ * Class:     processing_glvideo_GLVideo
+ * Method:    gstreamer_getWidth
+ * Signature: (J)I
+ */
+JNIEXPORT jint JNICALL Java_processing_glvideo_GLVideo_gstreamer_1getWidth
+  (JNIEnv *, jobject, jlong);
+
+/*
+ * Class:     processing_glvideo_GLVideo
+ * Method:    gstreamer_getHeight
+ * Signature: (J)I
+ */
+JNIEXPORT jint JNICALL Java_processing_glvideo_GLVideo_gstreamer_1getHeight
+  (JNIEnv *, jobject, jlong);
+
+/*
+ * Class:     processing_glvideo_GLVideo
+ * Method:    gstreamer_getFramerate
+ * Signature: (J)F
+ */
+JNIEXPORT jfloat JNICALL Java_processing_glvideo_GLVideo_gstreamer_1getFramerate
+  (JNIEnv *, jobject, jlong);
+
+/*
+ * Class:     processing_glvideo_GLVideo
  * Method:    gstreamer_close
  * Signature: (J)V
  */
