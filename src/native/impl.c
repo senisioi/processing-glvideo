@@ -500,5 +500,34 @@ JNIEXPORT jfloat JNICALL Java_processing_glvideo_GLVideo_gstreamer_1getFramerate
 
 JNIEXPORT void JNICALL Java_processing_glvideo_GLVideo_gstreamer_1close
   (JNIEnv * env, jobject obj, jlong handle) {
-    // TODO
+    GLVIDEO_STATE_T *state = (GLVIDEO_STATE_T *) handle;
+
+    // stop pipeline
+    gst_element_set_state (state->pipeline, GST_STATE_NULL);
+
+    // free both buffers
+    g_mutex_lock (&state->buffer_lock);
+    if (state->current_buffer) {
+      gst_buffer_unref (state->current_buffer);
+      state->current_buffer = NULL;
+    }
+    if (state->next_buffer) {
+      gst_buffer_unref (state->next_buffer);
+      state->next_buffer = NULL;
+    }
+    g_mutex_unlock (&state->buffer_lock);
+
+    gst_object_unref (state->gl_context);
+    gst_object_unref (state->gst_display);
+
+    gst_object_unref (state->vsink);
+    gst_object_unref (state->pipeline);
+
+    if (state->caps) {
+      gst_caps_unref (state->caps);
+    }
+
+    g_mutex_clear (&state->buffer_lock);
+
+    free(state);
   }
