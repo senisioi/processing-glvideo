@@ -18,10 +18,10 @@ JNIEXPORT jboolean JNICALL Java_processing_glvideo_GLVideo_gstreamer_1init
 /*
  * Class:     processing_glvideo_GLVideo
  * Method:    gstreamer_open
- * Signature: (Ljava/lang/String;Ljava/lang/String;)J
+ * Signature: (Ljava/lang/String;)J
  */
 JNIEXPORT jlong JNICALL Java_processing_glvideo_GLVideo_gstreamer_1open
-  (JNIEnv *, jobject, jstring, jstring);
+  (JNIEnv *, jobject, jstring);
 
 /*
  * Class:     processing_glvideo_GLVideo

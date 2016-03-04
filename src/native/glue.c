@@ -7,7 +7,7 @@ JNIEXPORT jboolean JNICALL Java_processing_glvideo_GLVideo_gstreamer_1init
   }
 
 JNIEXPORT jlong JNICALL Java_processing_glvideo_GLVideo_gstreamer_1open
-  (JNIEnv *env, jobject obj, jstring pipeline, jstring fn) {
+  (JNIEnv *env, jobject obj, jstring fn_or_uri) {
   	return 1;
   }
 

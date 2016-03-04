@@ -33,7 +33,7 @@ public class GLVideo {
   protected PApplet parent;
   protected long handle = 0;
 
-  public GLVideo(PApplet parent, String fn) {
+  public GLVideo(PApplet parent, String fn_or_uri) {
     super();
     this.parent = parent;
 
@@ -49,22 +49,22 @@ public class GLVideo {
       throw new RuntimeException("Could not load gstreamer");
     }
 
-    // get absolute path for fn
-    if (fn.indexOf("://") != -1) {
+    if (fn_or_uri.indexOf("://") != -1) {
       // got URI, use as is
     } else {
+      // get absolute path for fn
       // first, check Processing's dataPath
-      File file = new File(parent.dataPath(fn));
+      File file = new File(parent.dataPath(fn_or_uri));
       if (file.exists() == false) {
         // next, the current directory
-        file = new File(fn);
+        file = new File(fn_or_uri);
       }
       if (file.exists()) {
-        fn = file.getAbsolutePath();
+        fn_or_uri = file.getAbsolutePath();
       }
     }
 
-    handle = gstreamer_open("foo", fn);
+    handle = gstreamer_open(fn_or_uri);
     if (handle == 0) {
       throw new RuntimeException("Could not load video");
     }
@@ -79,7 +79,11 @@ public class GLVideo {
   }
 
   public int getFrame() {
-    return gstreamer_getFrame(handle);
+    if (handle == 0) {
+      return 0;
+    } else {
+      return gstreamer_getFrame(handle);
+    }
   }
 
   public void close() {
@@ -91,7 +95,7 @@ public class GLVideo {
 
 
   private static native boolean gstreamer_init();
-  private native long gstreamer_open(String pipeline, String fn);
+  private native long gstreamer_open(String fn_or_uri);
   private native boolean gstreamer_available(long handle);
   private native int gstreamer_getFrame(long handle);
   private native void gstreamer_close(long handle);
