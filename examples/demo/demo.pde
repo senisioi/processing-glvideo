@@ -14,8 +14,13 @@ void draw() {
   if (video.available()) {
     int tex = video.getFrame();
     PGL pgl = beginPGL();
-    pgl.drawTexture(PGL.TEXTURE_2D, tex, width, height,
-                    0, 0, width, height);
+    pgl.drawTexture(PGL.TEXTURE_2D,
+                    tex,
+                    width, height,        // texture size
+                    0, 0, width, height,  // viewport
+                    0, height, width, 0,  // texture coords
+                    0, 0, width, width);  // screen coords the texture
+                                          // coords are mapped onto
     endPGL();
   }
 }
