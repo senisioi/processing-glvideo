@@ -76,7 +76,6 @@ handle_buffer (GLVIDEO_STATE_T * state, GstBuffer * buffer)
     state->next_buffer = NULL;
   }
   state->next_tex = 0;
-  // TODO: not necessary to do glDeleteTextures()?
 
   GstMemory *mem = gst_buffer_peek_memory (buffer, 0);
 
@@ -362,7 +361,6 @@ JNIEXPORT jint JNICALL Java_processing_glvideo_GLVideo_gstreamer_1getFrame
     if (likely(state->current_buffer != NULL)) {
       gst_buffer_unref (state->current_buffer);
     }
-    // TODO: not necessary to do glDeleteTextures()?
     state->current_buffer = state->next_buffer;
     state->current_tex = state->next_tex;
     state->next_buffer = NULL;
