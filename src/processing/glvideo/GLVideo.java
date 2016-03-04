@@ -46,7 +46,7 @@ public class GLVideo {
     }
 
     if (error) {
-      throw new RuntimeException("Could not load gstreamer");
+      throw new RuntimeException("Could not load GStreamer");
     }
 
     if (fn_or_uri.indexOf("://") != -1) {
