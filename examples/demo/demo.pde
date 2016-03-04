@@ -5,12 +5,15 @@ import processing.glvideo.GLVideo;
 GLVideo video;
 
 void setup() {
-  size(853, 480);
-  video = new GLVideo(this, "big_buck_bunny_480p_h264.mov");
+  size(400, 400, P3D);
   frameRate(24);
 }
 
 void draw() {
+  if (video == null) {
+    video = new GLVideo(this, "big_buck_bunny_480p_h264.mov");
+  }
+
   if (video.available()) {
 
     int tex = video.getFrame();
