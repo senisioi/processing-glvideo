@@ -2,7 +2,7 @@
 
 /*
   Copyright (c) The Processing Foundation 2016
-  Developed by Gottfried Haider & Andres Colubri
+  Developed by Gottfried Haider
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
