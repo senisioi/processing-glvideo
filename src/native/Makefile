@@ -6,9 +6,8 @@ PLATFORM := $(shell uname -s)
 
 CFLAGS := -fPIC -g
 ifeq ($(PLATFORM),Linux)
-	# TODO: derive from javac location
-	CFLAGS += -I/usr/lib/jvm/jdk-8-oracle-arm32-vfp-hflt/include
-	CFLAGS += -I/usr/lib/jvm/jdk-8-oracle-arm32-vfp-hflt/include/linux
+	CFLAGS += -I$(shell dirname $(shell realpath $(shell which javac)))/../include
+	CFLAGS += -I$(shell dirname $(shell realpath $(shell which javac)))/../include/linux
 	CFLAGS += -I/opt/vc/include
 	CFLAGS += -I/opt/vc/include/interface/vcos/pthreads
 	CFLAGS += $(shell pkg-config gstreamer-1.0 --cflags-only-I)
