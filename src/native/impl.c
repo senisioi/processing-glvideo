@@ -341,11 +341,6 @@ JNIEXPORT jlong JNICALL Java_processing_glvideo_GLVideo_gstreamer_1open
     g_signal_connect (G_OBJECT (bus), "message::buffering",
       (GCallback) buffering_cb, state);
     g_signal_connect (G_OBJECT (bus), "message::eos", (GCallback) eos_cb, state);
-    // TODO: needed?
-    /*
-    g_signal_connect (G_OBJECT (bus), "message::state-changed",
-      (GCallback) state_changed_cb, state);
-    */
     gst_object_unref (bus);
 
     // start paused
