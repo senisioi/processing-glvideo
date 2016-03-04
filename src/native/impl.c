@@ -290,7 +290,7 @@ JNIEXPORT jboolean JNICALL Java_processing_glvideo_GLVideo_gstreamer_1init
 
     // TODO: add note re gpu_mem
 
-  	return JNI_TRUE;
+    return JNI_TRUE;
   }
 
 JNIEXPORT jlong JNICALL Java_processing_glvideo_GLVideo_gstreamer_1open
