@@ -25,10 +25,10 @@ JNIEXPORT jlong JNICALL Java_processing_glvideo_GLVideo_gstreamer_1open
 
 /*
  * Class:     processing_glvideo_GLVideo
- * Method:    gstreamer_available
+ * Method:    gstreamer_isAvailable
  * Signature: (J)Z
  */
-JNIEXPORT jboolean JNICALL Java_processing_glvideo_GLVideo_gstreamer_1available
+JNIEXPORT jboolean JNICALL Java_processing_glvideo_GLVideo_gstreamer_1isAvailable
   (JNIEnv *, jobject, jlong);
 
 /*

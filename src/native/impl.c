@@ -352,10 +352,10 @@ JNIEXPORT jlong JNICALL Java_processing_glvideo_GLVideo_gstreamer_1open
     return (intptr_t) state;
   }
 
-JNIEXPORT jboolean JNICALL Java_processing_glvideo_GLVideo_gstreamer_1available
+JNIEXPORT jboolean JNICALL Java_processing_glvideo_GLVideo_gstreamer_1isAvailable
   (JNIEnv * env, jobject obj, jlong handle) {
     GLVIDEO_STATE_T *state = (GLVIDEO_STATE_T *)(intptr_t) handle;
-    return (state->next_tex && state->next_tex != state->current_tex);
+    return (state->next_tex);
   }
 
 JNIEXPORT jint JNICALL Java_processing_glvideo_GLVideo_gstreamer_1getFrame

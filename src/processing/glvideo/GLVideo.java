@@ -88,7 +88,7 @@ public class GLVideo {
     if (handle == 0) {
       return false;
     } else {
-      return gstreamer_available(handle);
+      return gstreamer_isAvailable(handle);
     }
   }
 
