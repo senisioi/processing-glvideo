@@ -443,6 +443,14 @@ JNIEXPORT jboolean JNICALL Java_processing_glvideo_GLVideo_gstreamer_1setSpeed
     return gst_element_send_event (state->vsink, event);
   }
 
+JNIEXPORT jboolean JNICALL Java_processing_glvideo_GLVideo_gstreamer_1setVolume
+  (JNIEnv * env, jobject obj, jlong handle, jfloat vol) {
+    GLVIDEO_STATE_T *state = (GLVIDEO_STATE_T *)(intptr_t) handle;
+    // TODO: doesn' work
+    g_object_set (state->pipeline, "volume", (double)vol, NULL);
+    return true;
+  }
+
 JNIEXPORT jfloat JNICALL Java_processing_glvideo_GLVideo_gstreamer_1getDuration
   (JNIEnv * env, jobject obj, jlong handle) {
     GLVIDEO_STATE_T *state = (GLVIDEO_STATE_T *)(intptr_t) handle;

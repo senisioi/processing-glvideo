@@ -89,6 +89,14 @@ JNIEXPORT jboolean JNICALL Java_processing_glvideo_GLVideo_gstreamer_1setSpeed
 
 /*
  * Class:     processing_glvideo_GLVideo
+ * Method:    gstreamer_setVolume
+ * Signature: (JF)Z
+ */
+JNIEXPORT jboolean JNICALL Java_processing_glvideo_GLVideo_gstreamer_1setVolume
+  (JNIEnv *, jobject, jlong, jfloat);
+
+/*
+ * Class:     processing_glvideo_GLVideo
  * Method:    gstreamer_getDuration
  * Signature: (J)F
  */

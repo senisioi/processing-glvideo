@@ -181,6 +181,18 @@ public class GLVideo {
   }
 
   /**
+   *  Change the volume of the video's audio track, if there is one.
+   *  @param vol (0.0 is mute, 1.0 is 100%)
+   */
+  public void volume(float vol) {
+    if (handle != 0) {
+      if (!gstreamer_setVolume(handle, vol)) {
+        System.err.println("Cannot set volume to to " + vol);
+      }
+    }
+  }
+
+  /**
    *  Pause a video file.
    *  Playback can be resumed with the play or loop methods.
    */
