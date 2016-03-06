@@ -25,6 +25,9 @@ package processing.glvideo;
 import java.io.File;
 import processing.core.*;
 
+/**
+ *  @webref
+ */
 public class GLVideo {
 
   protected static boolean loaded = false;
@@ -33,6 +36,14 @@ public class GLVideo {
   protected PApplet parent;
   protected long handle = 0;
 
+  /**
+   *  Datatype for playing video files, which can be located in the sketch's
+   *  data folder, or on a remote URL. Since this library is using hardware
+   *  accelerated video playback it is necessary to use it in combination with
+   *  the P3D renderer.
+   *  @param parent typically use "this"
+   *  @param fn_or_uri filename or valid URL
+   */
   public GLVideo(PApplet parent, String fn_or_uri) {
     super();
     this.parent = parent;
@@ -70,6 +81,9 @@ public class GLVideo {
     }
   }
 
+  /**
+   *  Returns whether there is a new frame waiting to be displayed.
+   */
   public boolean available() {
     if (handle == 0) {
       return false;
@@ -78,7 +92,14 @@ public class GLVideo {
     }
   }
 
+  /**
+   *  Get the most recent frame available as a GL texture.
+   *  You can use the texture name (id) returned by this method until your
+   *  next call of the getFrame method.
+   *  @return texture name (id) to use with P3D
+   */
   public int getFrame() {
+    // TODO: alternative names: read(), getTexture()
     if (handle == 0) {
       return 0;
     } else {
@@ -86,6 +107,12 @@ public class GLVideo {
     }
   }
 
+  /**
+   *  Starts or resumes video playback.
+   *  The play method will play a video file till the end and then stop.
+   *  GLVideo objects start out paused, so you might want to call this
+   *  method, or loop.
+   */
   public void play() {
     if (handle != 0) {
       gstreamer_setLooping(handle, false);
@@ -93,6 +120,12 @@ public class GLVideo {
     }
   }
 
+  /**
+   *  Starts or resumes looping video playback.
+   *  The loop method will continuously play back a video file.
+   *  GLVideo objects start out paused, so you might want to call this
+   *  method, or play.
+   */
   public void loop() {
     if (handle != 0) {
       gstreamer_setLooping(handle, true);
@@ -100,12 +133,19 @@ public class GLVideo {
     }
   }
 
+  /**
+   *  Stop a looping video after the end of its current iteration.
+   */
   public void noLoop() {
     if (handle != 0) {
       gstreamer_setLooping(handle, false);
     }
   }
 
+  /**
+   *  Jump to a specific time position in the video file.
+   *  @param sec seconds from the start of the video
+   */
   public void jump(float sec) {
     if (handle != 0) {
       if (!gstreamer_seek(handle, sec)) {
@@ -114,6 +154,13 @@ public class GLVideo {
     }
   }
 
+  /**
+   *  Change the speed in which a video file plays.
+   *  Values larger than 1.0 will play the video faster than real time,
+   *  while values lower than 1.0 will play it slower. Values lower than
+   *  zero are currently not supported.
+   *  @param rate playback rate (1.0 is real time)
+   */
   public void speed(float rate) {
     if (handle != 0) {
       if (!gstreamer_setSpeed(handle, rate)) {
@@ -122,12 +169,19 @@ public class GLVideo {
     }
   }
 
+  /**
+   *  Pause a video file.
+   *  Playback can be resumed with the play or loop methods.
+   */
   public void pause() {
     if (handle != 0) {
       gstreamer_stopPlayback(handle);
     }
   }
 
+  /**
+   *  Return the total length of the movie file in seconds.
+   */
   public float duration() {
     if (handle == 0) {
       return 0.0f;
@@ -136,6 +190,9 @@ public class GLVideo {
     }
   }
 
+  /**
+   *  Return the current time position in seconds.
+   */
   public float time() {
     if (handle == 0) {
       return 0.0f;
@@ -144,6 +201,9 @@ public class GLVideo {
     }
   }
 
+  /**
+   *  Return the native width of the movie file in pixels.
+   */
   public int width() {
     if (handle == 0) {
       return 0;
@@ -152,6 +212,9 @@ public class GLVideo {
     }
   }
 
+  /**
+   *  Return the native height of the movie file in pixels.
+   */
   public int height() {
     if (handle == 0) {
       return 0;
@@ -160,6 +223,10 @@ public class GLVideo {
     }
   }
 
+  /**
+   *  Return the native frame rate of the movie file in frames per second (fps).
+   *  This is currently not implemented.
+   */
   public float frameRate() {
     if (handle == 0) {
       return 0.0f;
@@ -168,6 +235,11 @@ public class GLVideo {
     }
   }
 
+  /**
+   *  Close a movie file.
+   *  This method releases all resources associated with the playback of a movie file.
+   *  Call close before loading and playing back a second file.
+   */
   public void close() {
     if (handle != 0) {
       gstreamer_close(handle);
