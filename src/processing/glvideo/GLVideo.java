@@ -168,8 +168,8 @@ public class GLVideo {
   /**
    *  Change the speed in which a video file plays.
    *  Values larger than 1.0 will play the video faster than real time,
-   *  while values lower than 1.0 will play it slower. Values lower than
-   *  zero are currently not supported.
+   *  while values lower than 1.0 will play it slower. Values less or equal
+   *  than zero are currently not supported.
    *  @param rate playback rate (1.0 is real time)
    */
   public void speed(float rate) {
@@ -261,7 +261,8 @@ public class GLVideo {
   /**
    *  Close a movie file.
    *  This method releases all resources associated with the playback of a movie file.
-   *  Call close before loading and playing back a second file.
+   *  Call close before loading and playing back a second file. After calling close
+   *  no other methods can be used anymore on his GLVideo instance.
    */
   public void close() {
     if (handle != 0) {
