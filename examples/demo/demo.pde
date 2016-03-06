@@ -7,11 +7,11 @@ GLVideo video;
 void setup() {
   size(400, 400, P3D);
   video = new GLVideo(this, "big_buck_bunny_480p_h264.mov");
-  video.loop();
+  video.play();
 }
 
 void draw() {
-  if (video.available()) {
+  if (video.playing() && video.available()) {
     int tex = video.getFrame();
     PGL pgl = beginPGL();
     pgl.drawTexture(PGL.TEXTURE_2D,

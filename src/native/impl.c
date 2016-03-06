@@ -182,10 +182,12 @@ buffering_cb (GstBus * bus, GstMessage * msg, GLVIDEO_STATE_T * state)
   gint percent;
 
   gst_message_parse_buffering (msg, &percent);
-  if (percent < 100)
+  if (percent < 100) {
     gst_element_set_state (state->pipeline, GST_STATE_PAUSED);
-  else {
+    state->buffering = true;
+  } else {
     gst_element_set_state (state->pipeline, GST_STATE_PLAYING);
+    state->buffering = false;
   }
 }
 
@@ -201,6 +203,8 @@ eos_cb (GstBus * bus, GstMessage * msg, GLVIDEO_STATE_T * state)
       if (!gst_element_send_event (state->vsink, event)) {
         g_printerr ("GLVideo: Error rewinding video\n");
       }
+    } else {
+      gst_element_set_state (state->pipeline, GST_STATE_PAUSED);
     }
   }
 }
@@ -374,6 +378,15 @@ JNIEXPORT void JNICALL Java_processing_glvideo_GLVideo_gstreamer_1startPlayback
     GLVIDEO_STATE_T *state = (GLVIDEO_STATE_T *)(intptr_t) handle;
 
     gst_element_set_state (state->pipeline, GST_STATE_PLAYING);
+  }
+
+JNIEXPORT jboolean JNICALL Java_processing_glvideo_GLVideo_gstreamer_1isPlaying
+  (JNIEnv * env, jobject obj, jlong handle) {
+    GLVIDEO_STATE_T *state = (GLVIDEO_STATE_T *)(intptr_t) handle;
+    GstState s;
+
+    gst_element_get_state (state->pipeline, &s, NULL, 0);
+    return (s == GST_STATE_PLAYING || (s == GST_STATE_PAUSED && state->buffering));
   }
 
 JNIEXPORT void JNICALL Java_processing_glvideo_GLVideo_gstreamer_1stopPlayback

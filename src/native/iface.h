@@ -49,6 +49,14 @@ JNIEXPORT void JNICALL Java_processing_glvideo_GLVideo_gstreamer_1startPlayback
 
 /*
  * Class:     processing_glvideo_GLVideo
+ * Method:    gstreamer_isPlaying
+ * Signature: (J)Z
+ */
+JNIEXPORT jboolean JNICALL Java_processing_glvideo_GLVideo_gstreamer_1isPlaying
+  (JNIEnv *, jobject, jlong);
+
+/*
+ * Class:     processing_glvideo_GLVideo
  * Method:    gstreamer_stopPlayback
  * Signature: (J)V
  */

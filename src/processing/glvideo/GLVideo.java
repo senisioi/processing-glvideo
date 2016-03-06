@@ -134,6 +134,17 @@ public class GLVideo {
   }
 
   /**
+   *  Returns true if the video is playing or if playback got interrupted by buffering.
+   */
+  public boolean playing() {
+    if (handle == 0) {
+      return false;
+    } else {
+      return gstreamer_isPlaying(handle);
+    }
+  }
+
+  /**
    *  Stop a looping video after the end of its current iteration.
    */
   public void noLoop() {
@@ -250,13 +261,15 @@ public class GLVideo {
 
   private static native boolean gstreamer_init();
   private native long gstreamer_open(String fn_or_uri);
-  private native boolean gstreamer_available(long handle);
+  private native boolean gstreamer_isAvailable(long handle);
   private native int gstreamer_getFrame(long handle);
   private native void gstreamer_startPlayback(long handle);
+  private native boolean gstreamer_isPlaying(long handle);
   private native void gstreamer_stopPlayback(long handle);
   private native void gstreamer_setLooping(long handle, boolean looping);
   private native boolean gstreamer_seek(long handle, float sec);
   private native boolean gstreamer_setSpeed(long handle, float rate);
+  private native boolean gstreamer_setVolume(long handle, float vol);
   private native float gstreamer_getDuration(long handle);
   private native float gstreamer_getPosition(long handle);
   private native int gstreamer_getWidth(long handle);

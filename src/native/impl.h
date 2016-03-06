@@ -18,6 +18,7 @@ typedef struct {
 
   bool looping;
   float rate;
+  bool buffering;
 } GLVIDEO_STATE_T;
 
 #endif
