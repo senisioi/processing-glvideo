@@ -18,6 +18,8 @@ ifeq ($(PLATFORM),Linux)
 	LDFLAGS += -L/opt/vc/lib
 	LDFLAGS += $(shell pkg-config gstreamer-1.0 --libs)
 	LDFLAGS += $(shell pkg-config gstreamer-gl-1.0 --libs)
+	LDFLAGS += -L../../library/linux-armv6hf
+	LDFLAGS += -Wl,-R,'$$ORIGIN'
 endif
 
 $(TARGET): $(OBJS)
