@@ -24,17 +24,19 @@ package processing.glvideo;
 
 import java.io.File;
 import processing.core.*;
+import processing.opengl.*;
 
 /**
  *  @webref
  */
-public class GLVideo {
+public class GLVideo extends PImage {
 
   protected static boolean loaded = false;
   protected static boolean error = false;
 
   protected PApplet parent;
   protected long handle = 0;
+  protected Texture texture;
 
   /**
    *  Datatype for playing video files, which can be located in the sketch's
@@ -45,7 +47,7 @@ public class GLVideo {
    *  @param fn_or_uri filename or valid URL
    */
   public GLVideo(PApplet parent, String fn_or_uri) {
-    super();
+    super(0, 0, ARGB);
     this.parent = parent;
 
     if (!loaded) {
@@ -103,17 +105,27 @@ public class GLVideo {
   }
 
   /**
-   *  Get the most recent frame available as a GL texture.
-   *  You can use the texture name (id) returned by this method until your
-   *  next call of the getFrame method.
-   *  @return texture name (id) to use with P3D
+   *  Load the most recent frame available as a GL texture.
+   *  The texture represented by this PImage object will remain
+   *  the same and valid until the next call of the read method.
    */
-  public int getFrame() {
-    // TODO: alternative names: read(), getTexture()
-    if (handle == 0) {
-      return 0;
-    } else {
-      return gstreamer_getFrame(handle);
+  public void read() {
+    if (handle != 0) {
+      // get current texture name
+      int texId = gstreamer_getFrame(handle);
+      // allocate Texture if needed, or simply update the texture name
+      if (texture == null) {
+        int w = gstreamer_getWidth(handle);
+        int h = gstreamer_getHeight(handle);
+        PGraphicsOpenGL pg = (PGraphicsOpenGL)parent.g;
+        Texture.Parameters params = new Texture.Parameters(ARGB, POINT, false, CLAMP);
+        texture = new Texture(pg, w, h, params);
+        this.width = texture.width;
+        this.height = texture.height;
+        pg.setCache(this, texture);
+      } else {
+        texture.glName = texId;
+      }
     }
   }
 
