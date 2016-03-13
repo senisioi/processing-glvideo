@@ -25,6 +25,20 @@
     </javac>
   </target>
 
+  <target name="javadoc">
+    <javadoc bottom="Processing Library GL Video by Gottfried Haider"
+        classpath="../processing/core/library/core.jar"
+        destdir="reference"
+        verbose="false"
+        doctitle="Javadocs: GL Video"
+        public="true"
+        windowtitle="Javadocs: GL Video">
+      <fileset dir="src/processing" defaultexcludes="yes">
+        <include name="**/*"/>
+      </fileset>
+    </javadoc>
+  </target>
+
   <target name="build" depends="compile" description="Build GL Video library">
     <jar basedir="bin" destfile="library/glvideo.jar" />
   </target>

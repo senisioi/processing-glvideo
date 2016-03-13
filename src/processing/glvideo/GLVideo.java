@@ -41,8 +41,9 @@ public class GLVideo extends PImage {
   /**
    *  Datatype for playing video files, which can be located in the sketch's
    *  data folder, or on a remote URL. Since this library is using hardware
-   *  accelerated video playback it is necessary to use it in combination with
-   *  the P3D renderer.
+   *  accelerated video playback, it is necessary to use it in combination with
+   *  the P3D renderer. Make sure the video file was prepared using a codec
+   *  that the GPU can natively decode (e.g. H.264 on the Raspberry Pi).
    *  @param parent typically use "this"
    *  @param fn_or_uri filename or valid URL
    */
@@ -105,9 +106,10 @@ public class GLVideo extends PImage {
   }
 
   /**
-   *  Load the most recent frame available as a GL texture.
-   *  The texture represented by this PImage object will remain
-   *  the same and valid until the next call of the read method.
+   *  Loads the most recent frame available.
+   *  After calling this method, you can use the object like any
+   *  PImage, e.g. by using the image function to draw it to the
+   *  screen.
    */
   public void read() {
     if (handle != 0) {
@@ -167,7 +169,7 @@ public class GLVideo extends PImage {
   }
 
   /**
-   *  Stop a looping video after the end of its current iteration.
+   *  Stops a looping video after the end of its current iteration.
    */
   public void noLoop() {
     if (handle != 0) {
@@ -176,7 +178,7 @@ public class GLVideo extends PImage {
   }
 
   /**
-   *  Jump to a specific time position in the video file.
+   *  Jumps to a specific time position in the video file.
    *  @param sec seconds from the start of the video
    */
   public void jump(float sec) {
@@ -188,7 +190,7 @@ public class GLVideo extends PImage {
   }
 
   /**
-   *  Change the speed in which a video file plays.
+   *  Changes the speed in which a video file plays.
    *  Values larger than 1.0 will play the video faster than real time,
    *  while values lower than 1.0 will play it slower. Values less or equal
    *  than zero are currently not supported.
@@ -203,7 +205,7 @@ public class GLVideo extends PImage {
   }
 
   /**
-   *  Change the volume of the video's audio track, if there is one.
+   *  Changes the volume of the video's audio track, if there is one.
    *  @param vol (0.0 is mute, 1.0 is 100%)
    */
   public void volume(float vol) {
@@ -215,7 +217,7 @@ public class GLVideo extends PImage {
   }
 
   /**
-   *  Pause a video file.
+   *  Pauses a video file.
    *  Playback can be resumed with the play or loop methods.
    */
   public void pause() {
@@ -225,7 +227,7 @@ public class GLVideo extends PImage {
   }
 
   /**
-   *  Return the total length of the movie file in seconds.
+   *  Returns the total length of the movie file in seconds.
    */
   public float duration() {
     if (handle == 0) {
@@ -236,7 +238,7 @@ public class GLVideo extends PImage {
   }
 
   /**
-   *  Return the current time position in seconds.
+   *  Returns the current time position in seconds.
    */
   public float time() {
     if (handle == 0) {
@@ -247,7 +249,7 @@ public class GLVideo extends PImage {
   }
 
   /**
-   *  Return the native width of the movie file in pixels.
+   *  Returns the native width of the movie file in pixels.
    */
   public int width() {
     if (handle == 0) {
@@ -258,7 +260,7 @@ public class GLVideo extends PImage {
   }
 
   /**
-   *  Return the native height of the movie file in pixels.
+   *  Returns the native height of the movie file in pixels.
    */
   public int height() {
     if (handle == 0) {
@@ -269,7 +271,7 @@ public class GLVideo extends PImage {
   }
 
   /**
-   *  Return the native frame rate of the movie file in frames per second (fps).
+   *  Returns the native frame rate of the movie file in frames per second (fps).
    *  This is currently not implemented.
    */
   public float frameRate() {
@@ -281,10 +283,10 @@ public class GLVideo extends PImage {
   }
 
   /**
-   *  Close a movie file.
+   *  Closes a movie file.
    *  This method releases all resources associated with the playback of a movie file.
    *  Call close before loading and playing back a second file. After calling close
-   *  no other methods can be used anymore on his GLVideo instance.
+   *  no other methods can be used anymore on this GLVideo instance.
    */
   public void close() {
     if (handle != 0) {
