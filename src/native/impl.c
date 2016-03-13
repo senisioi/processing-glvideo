@@ -296,8 +296,8 @@ JNIEXPORT jboolean JNICALL Java_processing_glvideo_GLVideo_gstreamer_1init
       g_error_free (error);
       return JNI_FALSE;
     }
-    fprintf (stderr, "GLVideo: display %p, surface %p, context %p at init\n",
-      (void *) display, (void *) surface, (void *) context);
+    //fprintf (stderr, "GLVideo: display %p, surface %p, context %p at init\n",
+    //  (void *) display, (void *) surface, (void *) context);
 
     // start GLib main loop in a separate thread
     thread = g_thread_new ("glvideo-mainloop", glvideo_mainloop, NULL);
