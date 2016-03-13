@@ -9,6 +9,14 @@ extern "C" {
 #endif
 /*
  * Class:     processing_glvideo_GLVideo
+ * Method:    gstreamer_setEnvVar
+ * Signature: (Ljava/lang/String;Ljava/lang/String;)V
+ */
+JNIEXPORT void JNICALL Java_processing_glvideo_GLVideo_gstreamer_1setEnvVar
+  (JNIEnv *, jclass, jstring, jstring);
+
+/*
+ * Class:     processing_glvideo_GLVideo
  * Method:    gstreamer_init
  * Signature: ()Z
  */

@@ -40,6 +40,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <gst/gl/gl.h>
 #include <gst/gl/egl/gstgldisplay_egl.h>
 #include <stdbool.h>
+#include <stdlib.h>
 #include "impl.h"
 #include "iface.h"
 
@@ -264,6 +265,15 @@ glvideo_mainloop (void * data) {
   g_main_loop_run (mainloop);
   return NULL;
 }
+
+JNIEXPORT void JNICALL Java_processing_glvideo_GLVideo_gstreamer_1setEnvVar
+  (JNIEnv * env, jclass cls, jstring _name, jstring _val) {
+    const char *name = (*env)->GetStringUTFChars (env, _name, JNI_FALSE);
+    const char *val = (*env)->GetStringUTFChars (env, _val, JNI_FALSE);
+    setenv (name, val, 1);
+    (*env)->ReleaseStringUTFChars (env, _val, val);
+    (*env)->ReleaseStringUTFChars (env, _name, name);
+  }
 
 JNIEXPORT jboolean JNICALL Java_processing_glvideo_GLVideo_gstreamer_1init
   (JNIEnv * env, jclass cls) {

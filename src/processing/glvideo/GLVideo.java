@@ -51,6 +51,16 @@ public class GLVideo {
     if (!loaded) {
       System.loadLibrary("glvideo");
       loaded = true;
+
+      String jar = GLVideo.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+      String nativeLib = jar.substring(0, jar.lastIndexOf(File.separatorChar)) + "/linux-armv6hf";
+      // set a custom plugin path and prevent globally installed libraries from being loaded
+      gstreamer_setEnvVar("GST_PLUGIN_PATH_1_0", nativeLib + "/gstreamer-1.0/");
+      gstreamer_setEnvVar("GST_PLUGIN_SYSTEM_PATH_1_0", "");
+      // keep a local registry
+      gstreamer_setEnvVar("GST_REGISTRY_1_0", nativeLib + "/gstreamer-1.0/registry");
+      // we could also set GST_GL_API & GST_GL_PLATFORM here
+
       if (gstreamer_init() == false) {
         error = true;
       }
@@ -272,6 +282,7 @@ public class GLVideo {
   }
 
 
+  private static native void gstreamer_setEnvVar(String name, String val);
   private static native boolean gstreamer_init();
   private native long gstreamer_open(String fn_or_uri);
   private native boolean gstreamer_isAvailable(long handle);
