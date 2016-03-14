@@ -33,7 +33,7 @@
         doctitle="Javadocs: GL Video"
         public="true"
         windowtitle="Javadocs: GL Video">
-      <fileset dir="src/processing" defaultexcludes="yes">
+      <fileset dir="src/gohai" defaultexcludes="yes">
         <include name="**/*"/>
       </fileset>
     </javadoc>

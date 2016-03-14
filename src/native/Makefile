@@ -26,7 +26,7 @@ $(TARGET): $(OBJS)
 	$(CC) $(CFLAGS) $(LDFLAGS) $^ -o $@
 
 iface.h:
-	javah -classpath .. -o iface.h processing.glvideo.GLVideo
+	javah -classpath .. -o iface.h gohai.glvideo.GLVideo
 
 clean:
 	rm -f $(TARGET) $(OBJS)
