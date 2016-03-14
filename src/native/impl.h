@@ -16,6 +16,8 @@ typedef struct {
   GstBuffer *next_buffer;
   GLuint next_tex;
 
+  int flags;
+
   bool looping;
   float rate;
   bool buffering;

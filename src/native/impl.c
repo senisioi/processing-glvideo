@@ -251,9 +251,13 @@ init_playbin_player (GLVIDEO_STATE_T * state, const gchar * uri)
 
   /* Instantiate and configure playbin */
   state->pipeline = gst_element_factory_make ("playbin", "player");
+  GstPlayFlags flags = GST_PLAY_FLAG_NATIVE_VIDEO;
+  if ((state->flags & 1) == 0) {
+    flags |= GST_PLAY_FLAG_AUDIO;
+  }
   g_object_set (state->pipeline, "uri", uri,
       "video-sink", vbin, "flags",
-      GST_PLAY_FLAG_NATIVE_VIDEO | GST_PLAY_FLAG_AUDIO, NULL);
+      flags, NULL);
 
   state->vsink = gst_object_ref (vsink);
   return TRUE;
@@ -306,12 +310,13 @@ JNIEXPORT jboolean JNICALL Java_gohai_glvideo_GLVideo_gstreamer_1init
   }
 
 JNIEXPORT jlong JNICALL Java_gohai_glvideo_GLVideo_gstreamer_1open
-  (JNIEnv * env, jobject obj, jstring _fn_or_uri) {
+  (JNIEnv * env, jobject obj, jstring _fn_or_uri, jint flags) {
     GLVIDEO_STATE_T *state = malloc (sizeof (GLVIDEO_STATE_T));
     if (!state) {
       return 0L;
     }
     memset (state, 0, sizeof (*state));
+    state->flags = flags;
     state->rate = 1.0f;
 
     // setup EGL context sharing

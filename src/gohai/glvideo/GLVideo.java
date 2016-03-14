@@ -31,12 +31,16 @@ import processing.opengl.*;
  */
 public class GLVideo extends PImage {
 
+  /* flags */
+  public static final int MUTE = 1;
+
   protected static boolean loaded = false;
   protected static boolean error = false;
 
   protected PApplet parent;
   protected long handle = 0;
   protected Texture texture;
+  protected int flags = 0;
 
   /**
    *  Datatype for playing video files, which can be located in the sketch's
@@ -48,8 +52,16 @@ public class GLVideo extends PImage {
    *  @param fn_or_uri filename or valid URL
    */
   public GLVideo(PApplet parent, String fn_or_uri) {
+    this(parent, fn_or_uri, 0);
+  }
+
+  /**
+   *  @param flags pass GLVideo.MUTE to disable audio playback
+   */
+  public GLVideo(PApplet parent, String fn_or_uri, int flags) {
     super(0, 0, ARGB);
     this.parent = parent;
+    this.flags = flags;
 
     if (!loaded) {
       System.loadLibrary("glvideo");
@@ -88,7 +100,7 @@ public class GLVideo extends PImage {
       }
     }
 
-    handle = gstreamer_open(fn_or_uri);
+    handle = gstreamer_open(fn_or_uri, flags);
     if (handle == 0) {
       throw new RuntimeException("Could not load video");
     }
@@ -298,7 +310,7 @@ public class GLVideo extends PImage {
 
   private static native void gstreamer_setEnvVar(String name, String val);
   private static native boolean gstreamer_init();
-  private native long gstreamer_open(String fn_or_uri);
+  private native long gstreamer_open(String fn_or_uri, int flags);
   private native boolean gstreamer_isAvailable(long handle);
   private native int gstreamer_getFrame(long handle);
   private native void gstreamer_startPlayback(long handle);
