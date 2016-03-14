@@ -302,8 +302,6 @@ JNIEXPORT jboolean JNICALL Java_gohai_glvideo_GLVideo_gstreamer_1init
     // start GLib main loop in a separate thread
     thread = g_thread_new ("glvideo-mainloop", glvideo_mainloop, NULL);
 
-    // TODO: add note re gpu_mem
-
     return JNI_TRUE;
   }
 
