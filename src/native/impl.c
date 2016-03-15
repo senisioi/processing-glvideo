@@ -254,6 +254,9 @@ init_playbin_player (GLVIDEO_STATE_T * state, const gchar * uri)
   GstPlayFlags flags = GST_PLAY_FLAG_NATIVE_VIDEO;
   if ((state->flags & 1) == 0) {
     flags |= GST_PLAY_FLAG_AUDIO;
+    // this makes the sound work for alsasink on the Pi
+    // not sure if it ideal for other sinks though
+    flags |= GST_PLAY_FLAG_SOFT_VOLUME;
   }
   g_object_set (state->pipeline, "uri", uri,
       "video-sink", vbin, "flags",
@@ -470,8 +473,8 @@ JNIEXPORT jboolean JNICALL Java_gohai_glvideo_GLVideo_gstreamer_1setSpeed
 JNIEXPORT jboolean JNICALL Java_gohai_glvideo_GLVideo_gstreamer_1setVolume
   (JNIEnv * env, jobject obj, jlong handle, jfloat vol) {
     GLVIDEO_STATE_T *state = (GLVIDEO_STATE_T *)(intptr_t) handle;
-    // TODO: this doesn't seem to be supported by alsasink, test w/ pulseaudio
     if (vol == 0.0f) {
+      g_object_set (state->pipeline, "volume", 0.0, NULL);
       g_object_set (state->pipeline, "mute", TRUE, NULL);
     } else {
       g_object_set (state->pipeline, "mute", FALSE, NULL);
