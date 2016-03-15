@@ -1,5 +1,7 @@
-// place this file in the sketch's data folder
-// http://download.blender.org/peach/bigbuckbunny_movies/big_buck_bunny_480p_h264.mov
+/**
+ *  place this file in the sketch's data folder
+ *  http://download.blender.org/peach/bigbuckbunny_movies/big_buck_bunny_480p_h264.mov
+ */
 
 import gohai.glvideo.GLVideo;
 GLVideo video;
