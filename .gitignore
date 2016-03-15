@@ -1,5 +1,5 @@
 bin
 build.properties
-examples/demo/data/
+examples/*/data/
 library/glvideo.jar
 reference
