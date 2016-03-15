@@ -533,15 +533,15 @@ JNIEXPORT jfloat JNICALL Java_gohai_glvideo_GLVideo_gstreamer_1getFramerate
   (JNIEnv * env, jobject obj, jlong handle) {
     GLVIDEO_STATE_T *state = (GLVIDEO_STATE_T *)(intptr_t) handle;
     const GstStructure *str;
-    double fps = 0.0;
+    int num = 0;
+    int denom = 0;
 
     if (!state->caps || !gst_caps_is_fixed (state->caps)) {
       return 0.0f;
     }
     str = gst_caps_get_structure (state->caps, 0);
-    // TODO: doesn't work
-    gst_structure_get_double (str, "framerate", &fps);
-    return (float)fps;
+    gst_structure_get_fraction (str, "framerate", &num, &denom);
+    return (float)num/denom;
   }
 
 JNIEXPORT void JNICALL Java_gohai_glvideo_GLVideo_gstreamer_1close
