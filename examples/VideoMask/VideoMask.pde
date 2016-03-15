@@ -16,7 +16,7 @@ void setup() {
   size(427, 240, P2D);
   video = new GLVideo(this, "big_buck_bunny_480p_h264.mov");
   video.loop();
-  maskImage = createGraphics(video.width(), video.height(), P2D);
+  maskImage = createGraphics(width, height, P2D);
   maskImage.noSmooth();
   maskShader = loadShader("mask.glsl");
   maskShader.set("mask", maskImage);
