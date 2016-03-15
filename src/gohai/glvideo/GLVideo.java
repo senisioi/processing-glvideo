@@ -106,6 +106,10 @@ public class GLVideo extends PImage {
     }
   }
 
+  public void dispose() {
+    close();
+  }
+
   /**
    *  Returns whether there is a new frame waiting to be displayed.
    */
