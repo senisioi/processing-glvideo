@@ -488,6 +488,8 @@ JNIEXPORT jfloat JNICALL Java_gohai_glvideo_GLVideo_gstreamer_1getDuration
     GLVIDEO_STATE_T *state = (GLVIDEO_STATE_T *)(intptr_t) handle;
     gint64 duration = 0;
 
+    wait_for_state_change(state);
+
     gst_element_query_duration (state->pipeline, GST_FORMAT_TIME, &duration);
     return duration/1000000000.0f;
   }
@@ -507,6 +509,8 @@ JNIEXPORT jint JNICALL Java_gohai_glvideo_GLVideo_gstreamer_1getWidth
     const GstStructure *str;
     int width = 0;
 
+    wait_for_state_change(state);
+
     if (!state->caps || !gst_caps_is_fixed (state->caps)) {
       return 0;
     }
@@ -520,6 +524,8 @@ JNIEXPORT jint JNICALL Java_gohai_glvideo_GLVideo_gstreamer_1getHeight
     GLVIDEO_STATE_T *state = (GLVIDEO_STATE_T *)(intptr_t) handle;
     const GstStructure *str;
     int height = 0;
+
+    wait_for_state_change(state);
 
     if (!state->caps || !gst_caps_is_fixed (state->caps)) {
       return 0;
@@ -535,6 +541,8 @@ JNIEXPORT jfloat JNICALL Java_gohai_glvideo_GLVideo_gstreamer_1getFramerate
     const GstStructure *str;
     int num = 0;
     int denom = 0;
+
+    wait_for_state_change(state);
 
     if (!state->caps || !gst_caps_is_fixed (state->caps)) {
       return 0.0f;
