@@ -270,6 +270,12 @@ glvideo_mainloop (void * data) {
   return NULL;
 }
 
+static void
+wait_for_state_change (GLVIDEO_STATE_T * state) {
+  // this waits until any asynchronous state changes have completed (or failed)
+  gst_element_get_state (state->pipeline, NULL, NULL, GST_CLOCK_TIME_NONE);
+}
+
 JNIEXPORT void JNICALL Java_gohai_glvideo_GLVideo_gstreamer_1setEnvVar
   (JNIEnv * env, jclass cls, jstring _name, jstring _val) {
     const char *name = (*env)->GetStringUTFChars (env, _name, JNI_FALSE);
@@ -420,6 +426,8 @@ JNIEXPORT jboolean JNICALL Java_gohai_glvideo_GLVideo_gstreamer_1seek
     GLVIDEO_STATE_T *state = (GLVIDEO_STATE_T *)(intptr_t) handle;
     GstEvent *event;
 
+    wait_for_state_change(state);
+
     event = gst_event_new_seek (state->rate,
       GST_FORMAT_TIME, GST_SEEK_FLAG_FLUSH | GST_SEEK_FLAG_KEY_UNIT,
       GST_SEEK_TYPE_SET, (gint64)(sec * 1000000000), GST_SEEK_TYPE_SET,
@@ -437,6 +445,9 @@ JNIEXPORT jboolean JNICALL Java_gohai_glvideo_GLVideo_gstreamer_1setSpeed
     if (rate == state->rate) {
       return true;
     }
+
+    wait_for_state_change(state);
+
     if (0 < rate) {
       gst_element_query_position (state->vsink, GST_FORMAT_TIME, &start);
       stop = GST_CLOCK_TIME_NONE;
