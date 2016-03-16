@@ -20,12 +20,12 @@ void setup() {
 }
 
 void draw() {
-  if (video1.playing() && video1.available()) {
+  if (video1.available()) {
     video1.read();
-    image(video1, 0, 0, width/2, height);
   }
-  if (video2.playing() && video2.available()) {
+  if (video2.available()) {
     video2.read();
-    image(video2, width/2, 0, width/2, height);
   }
+  image(video1, 0, 0, width/2, height);
+  image(video2, width/2, 0, width/2, height);
 }
