@@ -1,6 +1,9 @@
 /**
  *  place this file in the sketch's data folder
  *  http://download.blender.org/peach/bigbuckbunny_movies/big_buck_bunny_480p_h264.mov
+ *
+ *  you might need to increase your GPU memory, to avoid:
+ *  OpenGL error 1285 at top endDraw(): out of memory
  */
 
 import gohai.glvideo.GLVideo;
