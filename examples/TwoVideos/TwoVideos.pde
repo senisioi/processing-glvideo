@@ -11,7 +11,7 @@ GLVideo video1;
 GLVideo video2;
 
 void setup() {
-  size(427, 240, P3D);
+  size(427, 240, P2D);
   video1 = new GLVideo(this, "big_buck_bunny_480p_h264.mov", GLVideo.MUTE);
   video2 = new GLVideo(this, "big_buck_bunny_480p_h264.mov", GLVideo.MUTE);
   video2.jump(5.0);

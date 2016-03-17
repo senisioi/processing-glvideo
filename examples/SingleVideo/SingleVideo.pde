@@ -10,7 +10,7 @@ import gohai.glvideo.GLVideo;
 GLVideo video;
 
 void setup() {
-  size(427, 240, P3D);
+  size(427, 240, P2D);
   video = new GLVideo(this, "big_buck_bunny_480p_h264.mov");
   video.play();
 }

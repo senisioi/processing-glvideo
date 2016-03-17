@@ -46,7 +46,7 @@ public class GLVideo extends PImage {
    *  Datatype for playing video files, which can be located in the sketch's
    *  data folder, or on a remote URL. Since this library is using hardware
    *  accelerated video playback, it is necessary to use it in combination with
-   *  the P3D renderer. Make sure the video file was prepared using a codec
+   *  the P2D or P3D renderers. Make sure the video file was prepared using a codec
    *  that the GPU can natively decode (e.g. H.264 on the Raspberry Pi).
    *  @param parent typically use "this"
    *  @param fn_or_uri filename or valid URL

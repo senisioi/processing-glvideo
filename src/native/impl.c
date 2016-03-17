@@ -308,7 +308,7 @@ JNIEXPORT jboolean JNICALL Java_gohai_glvideo_GLVideo_gstreamer_1init
     surface = eglGetCurrentSurface (0);
     context = eglGetCurrentContext ();
     if (!context) {
-      g_printerr ("GLVideo requires the P3D renderer.\n");
+      g_printerr ("GLVideo requires the P2D or P3D renderer.\n");
       g_error_free (error);
       return JNI_FALSE;
     }
