@@ -25,18 +25,36 @@ package gohai.glvideo;
 import gohai.glvideo.PerspectiveTransform;
 import java.awt.geom.Point2D;
 
+/**
+ *  @webref
+ */
 public class WarpPerspective {
 
   protected PerspectiveTransform transform;
 
+  /**
+   *  Class for calculating the perspective transformation for a point
+   *  @param transform PerspectiveTransform instance to use
+   */
   public WarpPerspective(PerspectiveTransform transform) {
     this.transform = transform;
   }
 
+  /**
+   *  Calculate the transformation for a point
+   *  @param point input (Point2D)
+   *  @return Point2D output
+   */
   public Point2D mapDestPoint(Point2D point) {
     return transform.transform(point, null);
   }
 
+  /**
+   *  Calculate the transformation for a point
+   *  @param x X coordinate of input point
+   *  @param y Y coordinate of input point
+   *  @return Point2D output
+   */
   public Point2D mapDestPoint(float x, float y) {
     return transform.transform(x, y);
   }

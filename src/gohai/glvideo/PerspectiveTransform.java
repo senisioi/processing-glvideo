@@ -25,6 +25,9 @@ package gohai.glvideo;
 
 import java.awt.geom.Point2D;
 
+/**
+ *  @webref
+ */
 public class PerspectiveTransform {
 
   protected float[] srcX = new float[4];
@@ -36,6 +39,16 @@ public class PerspectiveTransform {
   protected float[] warpMat = new float[16];
   protected boolean dirty;
 
+  /**
+   *  Return the perspective transformation between two quads.
+   *  The points (x/y0 to x/y3 and x/y0p to x/y3p) are assigned clockwise, starting
+   *  from the top-left corner, followed by the top-right corner, etc.
+   *  @param x0 X coordinate of the top left corner of the source quad
+   *  @param y0 Y coordinate of the top left corner of the source quad
+   *  @param x0p X coordinate of the top left corner of the destination quad
+   *  @param x0p Y coordinate of the top left corner of the destination quad
+   *  @return PerspectiveTransform instance that can be used as an argument to WarpPerspective()
+   */
   public static PerspectiveTransform getQuadToQuad(float x0, float y0,    // top left
                                                    float x1, float y1,    // top right
                                                    float x2, float y2,    // bottom right
@@ -60,6 +73,15 @@ public class PerspectiveTransform {
     setIdentity();
   }
 
+  /**
+   *  Class for calculating the perspective transformation between two quads.
+   *  The points (x/y0 to x/y3 and x/y0p to x/y3p) are assigned clockwise, starting
+   *  from the top-left corner, followed by the top-right corner, etc.
+   *  @param x0 X coordinate of the top left corner of the source quad
+   *  @param y0 Y coordinate of the top left corner of the source quad
+   *  @param x0p X coordinate of the top left corner of the destination quad
+   *  @param x0p Y coordinate of the top left corner of the destination quad
+   */
   public PerspectiveTransform(float x0, float y0,
                               float x1, float y1,
                               float x2, float y2,
