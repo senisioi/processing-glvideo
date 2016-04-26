@@ -24,6 +24,8 @@ endif
 
 $(TARGET): $(OBJS)
 	$(CC) $(CFLAGS) $(LDFLAGS) $^ -o $@
+	mkdir -p ../../library/linux-armv6hf
+	cp $(TARGET) ../../library/linux-armv6hf
 
 iface.h:
 	javah -classpath .. -o iface.h gohai.glvideo.GLVideo
