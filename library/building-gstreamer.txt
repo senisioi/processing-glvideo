@@ -80,6 +80,14 @@ cd ..
 # External libraries:
 # zlib
 
+git clone https://github.com/thaytan/gst-rpicamsrc.git
+cd gst-rpicamsrc
+./autogen.sh --prefix=/usr/local
+make -j3 -l3
+sudo make install
+make clean
+cd ..
+
 git clone --recursive https://github.com/NixOS/patchelf.git
 cd patchelf
 ./bootstrap.sh
