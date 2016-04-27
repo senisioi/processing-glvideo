@@ -224,7 +224,7 @@ init_playbin_player (GLVIDEO_STATE_T * state, const gchar * uri)
   GstElement *vsink = gst_element_factory_make ("fakesink", "vsink");
 
   g_object_set (capsfilter, "caps",
-      gst_caps_from_string ("video/x-raw(memory:GLMemory)"), NULL);
+      gst_caps_from_string ("video/x-raw(memory:GLMemory),format=RGBA"), NULL);
   g_object_set (vsink, "sync", TRUE, "silent", TRUE, "qos", TRUE,
       "enable-last-sample", FALSE, "max-lateness", 20 * GST_MSECOND,
       "signal-handoffs", TRUE, NULL);
@@ -252,6 +252,10 @@ init_playbin_player (GLVIDEO_STATE_T * state, const gchar * uri)
   /* Instantiate and configure playbin */
   state->pipeline = gst_element_factory_make ("playbin", "player");
   GstPlayFlags flags = GST_PLAY_FLAG_NATIVE_VIDEO;
+  // make it possible to convert from YUV to RGBA for webcams
+  if (strstr (uri, "v4l2://")) {
+    flags = GST_PLAY_FLAG_VIDEO;
+  }
   if ((state->flags & 1) == 0) {
     flags |= GST_PLAY_FLAG_AUDIO;
     // this makes the sound work for alsasink on the Pi
