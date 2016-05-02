@@ -220,6 +220,8 @@ init_playbin_player (GLVIDEO_STATE_T * state, const gchar * uri)
   /* insert a gl filter so that the GstGLBufferPool
    * is managed automatically */
   GstElement *glfilter = gst_element_factory_make ("glupload", "glfilter");
+  // this is for v4l2 devices that output YUV
+  GstElement *glcolorconvert = gst_element_factory_make ("glcolorconvert", NULL);
   GstElement *capsfilter = gst_element_factory_make ("capsfilter", NULL);
   GstElement *vsink = gst_element_factory_make ("fakesink", "vsink");
 
@@ -232,7 +234,7 @@ init_playbin_player (GLVIDEO_STATE_T * state, const gchar * uri)
   g_signal_connect (vsink, "preroll-handoff", G_CALLBACK (preroll_cb), state);
   g_signal_connect (vsink, "handoff", G_CALLBACK (buffers_cb), state);
 
-  gst_bin_add_many (GST_BIN (vbin), glfilter, capsfilter, vsink, NULL);
+  gst_bin_add_many (GST_BIN (vbin), glfilter, glcolorconvert, capsfilter, vsink, NULL);
 
   pad = gst_element_get_static_pad (glfilter, "sink");
   ghostpad = gst_ghost_pad_new ("sink", pad);
@@ -246,16 +248,13 @@ init_playbin_player (GLVIDEO_STATE_T * state, const gchar * uri)
       NULL);
   gst_object_unref (pad);
 
-  gst_element_link (glfilter, capsfilter);
+  gst_element_link (glfilter, glcolorconvert);
+  gst_element_link (glcolorconvert, capsfilter);
   gst_element_link (capsfilter, vsink);
 
   /* Instantiate and configure playbin */
   state->pipeline = gst_element_factory_make ("playbin", "player");
   GstPlayFlags flags = GST_PLAY_FLAG_NATIVE_VIDEO;
-  // make it possible to convert from YUV to RGBA for webcams
-  if (strstr (uri, "v4l2://")) {
-    flags = GST_PLAY_FLAG_VIDEO;
-  }
   if ((state->flags & 1) == 0) {
     flags |= GST_PLAY_FLAG_AUDIO;
     // this makes the sound work for alsasink on the Pi
