@@ -41,6 +41,7 @@ public class GLVideo extends PImage {
   protected long handle = 0;
   protected Texture texture;
   protected int flags = 0;
+  protected boolean simulate = false;
 
   /**
    *  Datatype for playing video files, which can be located in the sketch's
@@ -63,7 +64,12 @@ public class GLVideo extends PImage {
     this.parent = parent;
     this.flags = flags;
 
-    if (!loaded) {
+    if (PApplet.platform != LINUX ||
+        !"arm".equals(System.getProperty("os.arch"))) {
+      System.err.println("The GL Video library is not supported on this platform. Instead of the actual video, your sketch will only receive stand-in frames that allow you to test the remainder of its functionality.");
+      simulate = true;
+      return;
+    } else if (!loaded) {
       System.loadLibrary("glvideo");
       loaded = true;
 
@@ -114,7 +120,9 @@ public class GLVideo extends PImage {
    *  Returns whether there is a new frame waiting to be displayed.
    */
   public boolean available() {
-    if (handle == 0) {
+    if (simulate) {
+      return true;
+    } else if (handle == 0) {
       return false;
     } else {
       return gstreamer_isAvailable(handle);
@@ -128,7 +136,23 @@ public class GLVideo extends PImage {
    *  screen.
    */
   public void read() {
-    if (handle != 0) {
+    if (simulate) {
+      if (width == 0) {
+        init(1280, 720, ARGB);
+        loadPixels();
+        for (int y=0; y < 720; y++) {
+          for (int x=0; x < 1280; x++) {
+            if (y < 720/2 && 1280/2 < x ||
+                720/2 < y && x < 1280/2) {
+              pixels[y * 1280 + x] = 0xFF000000;
+            } else {
+              pixels[y * 1280 + x] = 0xFFFFFFFF;
+            }
+          }
+        }
+        updatePixels();
+      }
+    } else if (handle != 0) {
       // get current texture name
       int texId = gstreamer_getFrame(handle);
       // allocate Texture if needed, or simply update the texture name
@@ -177,7 +201,9 @@ public class GLVideo extends PImage {
    *  Returns true if the video is playing or if playback got interrupted by buffering.
    */
   public boolean playing() {
-    if (handle == 0) {
+    if (simulate) {
+      return true;
+    } else if (handle == 0) {
       return false;
     } else {
       return gstreamer_isPlaying(handle);
@@ -246,7 +272,9 @@ public class GLVideo extends PImage {
    *  Returns the total length of the movie file in seconds.
    */
   public float duration() {
-    if (handle == 0) {
+    if (simulate) {
+      return 999.0f;
+    } else if (handle == 0) {
       return 0.0f;
     } else {
       return gstreamer_getDuration(handle);
@@ -268,7 +296,9 @@ public class GLVideo extends PImage {
    *  Returns the native width of the movie file in pixels.
    */
   public int width() {
-    if (handle == 0) {
+    if (simulate) {
+      return 1280;
+    } else if (handle == 0) {
       return 0;
     } else {
       return gstreamer_getWidth(handle);
@@ -279,7 +309,9 @@ public class GLVideo extends PImage {
    *  Returns the native height of the movie file in pixels.
    */
   public int height() {
-    if (handle == 0) {
+    if (simulate) {
+      return 720;
+    } else if (handle == 0) {
       return 0;
     } else {
       return gstreamer_getHeight(handle);
@@ -291,7 +323,9 @@ public class GLVideo extends PImage {
    *  This is currently not implemented.
    */
   public float frameRate() {
-    if (handle == 0) {
+    if (simulate) {
+      return 30.0f;
+    } else if (handle == 0) {
       return 0.0f;
     } else {
       return gstreamer_getFramerate(handle);
