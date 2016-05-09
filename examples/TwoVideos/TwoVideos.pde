@@ -1,7 +1,4 @@
 /**
- *  place this file in the sketch's data folder
- *  http://download.blender.org/peach/bigbuckbunny_movies/big_buck_bunny_480p_h264.mov
- *
  *  you might need to increase your GPU memory, to avoid:
  *  OpenGL error 1285 at top endDraw(): out of memory
  */
@@ -11,12 +8,12 @@ GLVideo video1;
 GLVideo video2;
 
 void setup() {
-  size(427, 240, P2D);
-  video1 = new GLVideo(this, "big_buck_bunny_480p_h264.mov", GLVideo.MUTE);
-  video2 = new GLVideo(this, "big_buck_bunny_480p_h264.mov", GLVideo.MUTE);
-  video2.jump(5.0);
-  video1.play();
-  video2.play();
+  size(560, 203, P2D);
+  video1 = new GLVideo(this, "launch2.mp4", GLVideo.MUTE);
+  video2 = new GLVideo(this, "launch2.mp4", GLVideo.MUTE);
+  video2.jump(2.0);
+  video1.loop();
+  video2.loop();
 }
 
 void draw() {

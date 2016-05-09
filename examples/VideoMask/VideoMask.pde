@@ -2,9 +2,6 @@
  *  Video Mask, based on Image Mask example
  *  move the mouse to reveal the video through the dynamic mask
  *
- *  place this file in the sketch's data folder
- *  http://download.blender.org/peach/bigbuckbunny_movies/big_buck_bunny_480p_h264.mov
- *
  *  you might need to increase your GPU memory, to avoid:
  *  OpenGL error 1285 at top endDraw(): out of memory
  */
@@ -16,8 +13,8 @@ PShader maskShader;
 PGraphics maskImage;
 
 void setup() {
-  size(427, 240, P2D);
-  video = new GLVideo(this, "big_buck_bunny_480p_h264.mov");
+  size(560, 406, P2D);
+  video = new GLVideo(this, "launch3.mp4");
   video.loop();
   maskImage = createGraphics(width, height, P2D);
   maskImage.noSmooth();

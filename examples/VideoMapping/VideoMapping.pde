@@ -1,7 +1,4 @@
 /**
- *  place this file in the sketch's data folder
- *  http://download.blender.org/peach/bigbuckbunny_movies/big_buck_bunny_480p_h264.mov
- *
  *  you might need to increase your GPU memory, to avoid:
  *  OpenGL error 1285 at top endDraw(): out of memory
  */
@@ -23,10 +20,10 @@ int res = 5;	// number of subdivisions (e.g. 5x5)
 int lastMouseMove = 0;
 
 void setup() {
-  fullScreen(P2D);	// XXX: or 3D?
+  fullScreen(P2D);
   noCursor();
 
-  video = new GLVideo(this, "big_buck_bunny_480p_h264.mov");
+  video = new GLVideo(this, "launch2.mp4");
   video.loop();
   sources[0] = video;
   sources[1] = loadImage("checkerboard.png");
@@ -50,7 +47,8 @@ void draw() {
   if (selCorner != -1 && (pmouseX != mouseX || pmouseY != mouseY)) {
     corners[selCorner].x = mouseX;
     corners[selCorner].y = mouseY;
-    // XXX: this improves performance, but find another way
+    // this improves performance, but will be replaced by a
+    // more elegant way in a future release
     quads = null;
     System.gc();
     quads = createMesh(sources[selSource], corners, res);
