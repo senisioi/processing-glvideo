@@ -220,8 +220,6 @@ init_playbin_player (GLVIDEO_STATE_T * state, const gchar * uri)
   /* insert a gl filter so that the GstGLBufferPool
    * is managed automatically */
   GstElement *glfilter = gst_element_factory_make ("glupload", "glfilter");
-  // this is for v4l2 devices that output YUV
-  GstElement *glcolorconvert = gst_element_factory_make ("glcolorconvert", NULL);
   GstElement *capsfilter = gst_element_factory_make ("capsfilter", NULL);
   GstElement *vsink = gst_element_factory_make ("fakesink", "vsink");
 
@@ -234,7 +232,7 @@ init_playbin_player (GLVIDEO_STATE_T * state, const gchar * uri)
   g_signal_connect (vsink, "preroll-handoff", G_CALLBACK (preroll_cb), state);
   g_signal_connect (vsink, "handoff", G_CALLBACK (buffers_cb), state);
 
-  gst_bin_add_many (GST_BIN (vbin), glfilter, glcolorconvert, capsfilter, vsink, NULL);
+  gst_bin_add_many (GST_BIN (vbin), glfilter, capsfilter, vsink, NULL);
 
   pad = gst_element_get_static_pad (glfilter, "sink");
   ghostpad = gst_ghost_pad_new ("sink", pad);
@@ -248,8 +246,16 @@ init_playbin_player (GLVIDEO_STATE_T * state, const gchar * uri)
       NULL);
   gst_object_unref (pad);
 
-  gst_element_link (glfilter, glcolorconvert);
-  gst_element_link (glcolorconvert, capsfilter);
+  // this is for v4l2 devices that output YUV
+  if (strstr (uri, "v4l2://")) {
+    GstElement *glcolorconvert = gst_element_factory_make ("glcolorconvert", NULL);
+    gst_bin_add (GST_BIN (vbin), glcolorconvert);
+    gst_element_link (glfilter, glcolorconvert);
+    gst_element_link (glcolorconvert, capsfilter);
+  } else {
+    gst_element_link (glfilter, capsfilter);
+  }
+
   gst_element_link (capsfilter, vsink);
 
   /* Instantiate and configure playbin */
@@ -282,7 +288,7 @@ wait_for_state_change (GLVIDEO_STATE_T * state) {
   gst_element_get_state (state->pipeline, NULL, NULL, GST_CLOCK_TIME_NONE);
   // DEBUG: output a .dot file with the current pipeline, trigger with one of many getters that call wait_for_state_change
   // DEBUG: make sure to set GST_DEBUG_DUMP_DOT_DIR environment variable as well
-  GST_DEBUG_BIN_TO_DOT_FILE (GST_BIN (state->pipeline), GST_DEBUG_GRAPH_SHOW_ALL, "playing");
+  //GST_DEBUG_BIN_TO_DOT_FILE (GST_BIN (state->pipeline), GST_DEBUG_GRAPH_SHOW_ALL, "playing");
 }
 
 JNIEXPORT void JNICALL Java_gohai_glvideo_GLVideo_gstreamer_1setEnvVar
