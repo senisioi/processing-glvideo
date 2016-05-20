@@ -42,4 +42,16 @@
   <target name="build" depends="compile" description="Build GL Video library">
     <jar basedir="bin" destfile="library/glvideo.jar" />
   </target>
+
+  <target name="dist" depends="build,javadoc">
+    <zip destfile="../processing-glvideo.zip">
+      <zipfileset dir="." prefix="glvideo">
+        <exclude name="bin/**"/>
+        <exclude name="examples/**/application.*/**"/>
+        <exclude name="**/sftp-config.json"/>
+      </zipfileset>
+    </zip>
+    <copy file="library.properties"
+          toFile="../processing-glvideo.txt"/>
+  </target>
 </project>
