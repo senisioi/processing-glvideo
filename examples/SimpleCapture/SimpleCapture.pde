@@ -6,7 +6,7 @@
  *  For use with the Raspberry Pi camera, make sure the camera is
  *  enabled in the Raspberry Pi Configuration tool and add the line
  *  "bcm2835_v4l2" (without quotation marks) to the file
- *  /dev/modules. After a restart you should be able to see the
+ *  /etc/modules. After a restart you should be able to see the
  *  camera device as /dev/video0.
  */
 
