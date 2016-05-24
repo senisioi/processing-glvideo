@@ -389,7 +389,7 @@ JNIEXPORT jlong JNICALL Java_gohai_glvideo_GLVideo_gstreamer_1open
 JNIEXPORT jboolean JNICALL Java_gohai_glvideo_GLVideo_gstreamer_1isAvailable
   (JNIEnv * env, jobject obj, jlong handle) {
     GLVIDEO_STATE_T *state = (GLVIDEO_STATE_T *)(intptr_t) handle;
-    return (state->next_tex);
+    return (state->next_tex != 0) ? JNI_TRUE : JNI_FALSE;
   }
 
 JNIEXPORT jint JNICALL Java_gohai_glvideo_GLVideo_gstreamer_1getFrame
