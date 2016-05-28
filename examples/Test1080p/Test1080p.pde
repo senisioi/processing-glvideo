@@ -10,7 +10,8 @@ import gohai.glvideo.GLVideo;
 GLVideo video;
 
 void setup() {
-  size(560, 406, P2D);
+  size(1280, 720, P2D);
+  noCursor();
   video = new GLVideo(this, "/opt/vc/src/hello_pi/hello_video/test.h264");
   video.loop();
 }
