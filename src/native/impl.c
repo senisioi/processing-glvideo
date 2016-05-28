@@ -72,7 +72,7 @@ static void
 handle_buffer (GLVIDEO_STATE_T * state, GstBuffer * buffer)
 {
   g_mutex_lock (&state->buffer_lock);
-  if (state->next_buffer) {
+  if (unlikely (state->next_buffer != NULL)) {
     gst_buffer_unref (state->next_buffer);
     state->next_buffer = NULL;
   }

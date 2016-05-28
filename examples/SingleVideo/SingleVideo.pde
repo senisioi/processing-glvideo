@@ -15,6 +15,6 @@ void setup() {
 void draw() {
   if (video.available()) {
     video.read();
+    image(video, 0, 0, width, height);
   }
-  image(video, 0, 0, width, height);
 }

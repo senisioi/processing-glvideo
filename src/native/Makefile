@@ -4,7 +4,7 @@ CC := gcc
 PLATFORM := $(shell uname -s)
 
 
-CFLAGS := -fPIC -g
+CFLAGS := -fPIC -O2 -mtune=native
 ifeq ($(PLATFORM),Linux)
 	CFLAGS += -I$(shell dirname $(shell realpath $(shell which javac)))/../include
 	CFLAGS += -I$(shell dirname $(shell realpath $(shell which javac)))/../include/linux
