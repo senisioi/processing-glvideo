@@ -19,6 +19,7 @@ void setup() {
 }
 
 void draw() {
+  background(0);
   if (video.available()) {
   	video.read();
   }
