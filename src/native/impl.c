@@ -38,9 +38,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define GST_USE_UNSTABLE_API
 #include <gst/gst.h>
 #include <gst/gl/gl.h>
+#ifdef __APPLE__
+#elif
 #include <gst/gl/egl/gstgldisplay_egl.h>
+#endif
 #include <stdbool.h>
 #include <stdlib.h>
+#include <string.h>
 #include "impl.h"
 #include "iface.h"
 
@@ -64,9 +68,12 @@ typedef enum
 
 static GThread *thread;
 static GMainLoop *mainloop;
+#ifdef __APPLE__
+#elif
 static EGLDisplay display;
 static EGLSurface surface;
 static EGLContext context;
+#endif
 
 static void
 handle_buffer (GLVIDEO_STATE_T * state, GstBuffer * buffer)
@@ -313,6 +320,8 @@ JNIEXPORT jboolean JNICALL Java_gohai_glvideo_GLVideo_gstreamer_1init
     }
 
     // save the current EGL context
+#ifdef __APPLE__
+#elif
     display = eglGetCurrentDisplay ();
     surface = eglGetCurrentSurface (0);
     context = eglGetCurrentContext ();
@@ -323,6 +332,7 @@ JNIEXPORT jboolean JNICALL Java_gohai_glvideo_GLVideo_gstreamer_1init
     }
     //fprintf (stderr, "GLVideo: display %p, surface %p, context %p at init\n",
     //  (void *) display, (void *) surface, (void *) context);
+#endif
 
     // start GLib main loop in a separate thread
     thread = g_thread_new ("glvideo-mainloop", glvideo_mainloop, NULL);
@@ -340,11 +350,14 @@ JNIEXPORT jlong JNICALL Java_gohai_glvideo_GLVideo_gstreamer_1open
     state->flags = flags;
     state->rate = 1.0f;
 
+#ifdef __APPLE__
+#elif
     // setup EGL context sharing
     state->gst_display = gst_gl_display_egl_new_with_egl_display (display);
     state->gl_context =
       gst_gl_context_new_wrapped (GST_GL_DISPLAY (state->gst_display),
       (guintptr) context, GST_GL_PLATFORM_EGL, GST_GL_API_GLES2);
+#endif
 
     // setup mutex to protect double buffering scheme
     g_mutex_init (&state->buffer_lock);
