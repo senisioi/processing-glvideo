@@ -386,7 +386,7 @@ JNIEXPORT jboolean JNICALL Java_gohai_glvideo_GLVideo_gstreamer_1init
 
     // save the current EGL context
 #ifdef __APPLE__
-    context = gst_gl_context_cocoa_get_current_context();
+    context = gst_gl_context_cocoa_get_current_context ();
 #elif
     display = eglGetCurrentDisplay ();
     surface = eglGetCurrentSurface (0);
@@ -411,7 +411,7 @@ JNIEXPORT jstring JNICALL Java_gohai_glvideo_GLVideo_gstreamer_1filenameToUri
     const char *fn = (*env)->GetStringUTFChars (env, _fn, JNI_FALSE);
     gchar *uri = gst_filename_to_uri (fn, NULL);
     (*env)->ReleaseStringUTFChars (env, _fn, fn);
-    jstring ret = (*env)->NewStringUTF(env, uri);
+    jstring ret = (*env)->NewStringUTF (env, uri);
     g_free (uri);
     return ret;
   }
@@ -540,7 +540,7 @@ JNIEXPORT jint JNICALL Java_gohai_glvideo_GLVideo_gstreamer_1getFrame
   (JNIEnv * env, jclass cls, jlong handle) {
     GLVIDEO_STATE_T *state = (GLVIDEO_STATE_T *)(intptr_t) handle;
     g_mutex_lock (&state->buffer_lock);
-    if (likely(state->current_buffer != NULL)) {
+    if (likely (state->current_buffer != NULL)) {
       gst_buffer_unref (state->current_buffer);
     }
     state->current_buffer = state->next_buffer;
@@ -739,5 +739,5 @@ JNIEXPORT void JNICALL Java_gohai_glvideo_GLVideo_gstreamer_1close
 
     g_mutex_clear (&state->buffer_lock);
 
-    free(state);
+    free (state);
   }
