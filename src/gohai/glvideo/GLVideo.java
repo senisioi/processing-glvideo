@@ -80,9 +80,8 @@ public class GLVideo extends PImage {
         gstreamer_setEnvVar("GST_PLUGIN_PATH_1_0", nativeLib + "/linux-armv6hf/gstreamer-1.0/:" + nativeLib + "/gstreamer-1.0/");
         gstreamer_setEnvVar("GST_REGISTRY_1_0", nativeLib + "/linux-armv6hf/gstreamer-1.0/registry");
       }
-      // XXX: add this for linux as well
       gstreamer_setEnvVar("GST_REGISTRY_FORK", "no");
-      // XXX: DEBUG
+      // DEBUG
       //gstreamer_setEnvVar("GST_DEBUG_NO_COLOR", "1");
       //gstreamer_setEnvVar("GST_DEBUG", "3");
 
