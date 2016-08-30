@@ -11,6 +11,7 @@ ifeq ($(PLATFORM),Linux)
 	CFLAGS += -I/opt/vc/include
 	CFLAGS += -I/opt/vc/include/interface/vcos/pthreads
 	CFLAGS += $(shell pkg-config gstreamer-1.0 --cflags-only-I)
+	CFLAGS += $(shell pkg-config gstreamer-gl-1.0 --cflags-only-I)
 endif
 ifeq ($(PLATFORM),Darwin)
 	# this is currently 64-bit only

@@ -40,7 +40,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <gst/gl/gl.h>
 #ifdef __APPLE__
 #include <gst/gl/cocoa/gstglcontext_cocoa.h>
-#elif
+#else
 #include <gst/gl/egl/gstgldisplay_egl.h>
 #endif
 #include <stdbool.h>
@@ -71,7 +71,7 @@ static GThread *thread;
 static GMainLoop *mainloop;
 #ifdef __APPLE__
 static guintptr context;
-#elif
+#else
 static EGLDisplay display;
 static EGLSurface surface;
 static EGLContext context;
@@ -385,7 +385,7 @@ JNIEXPORT jboolean JNICALL Java_gohai_glvideo_GLVideo_gstreamer_1init
     // save the current EGL context
 #ifdef __APPLE__
     context = gst_gl_context_cocoa_get_current_context ();
-#elif
+#else
     display = eglGetCurrentDisplay ();
     surface = eglGetCurrentSurface (0);
     context = eglGetCurrentContext ();
@@ -430,7 +430,7 @@ JNIEXPORT jlong JNICALL Java_gohai_glvideo_GLVideo_gstreamer_1open
     state->gl_context =
       gst_gl_context_new_wrapped (GST_GL_DISPLAY (state->gst_display),
       context, GST_GL_PLATFORM_CGL, gst_gl_context_get_current_gl_api (GST_GL_PLATFORM_CGL, NULL, NULL));
-#elif
+#else
     state->gst_display = gst_gl_display_egl_new_with_egl_display (display);
     state->gl_context =
       gst_gl_context_new_wrapped (GST_GL_DISPLAY (state->gst_display),
@@ -488,7 +488,7 @@ JNIEXPORT jlong JNICALL Java_gohai_glvideo_GLVideo_gstreamer_1open_1pipeline
     state->gl_context =
       gst_gl_context_new_wrapped (GST_GL_DISPLAY (state->gst_display),
       context, GST_GL_PLATFORM_CGL, gst_gl_context_get_current_gl_api (GST_GL_PLATFORM_CGL, NULL, NULL));
-#elif
+#else
     state->gst_display = gst_gl_display_egl_new_with_egl_display (display);
     state->gl_context =
       gst_gl_context_new_wrapped (GST_GL_DISPLAY (state->gst_display),

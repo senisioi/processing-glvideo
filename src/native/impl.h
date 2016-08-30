@@ -8,7 +8,7 @@ typedef struct {
 
 #ifdef __APPLE__
   GstGLDisplay *gst_display;
-#elif
+#else
   GstGLDisplayEGL *gst_display;
 #endif
   GstGLContext *gl_context;
