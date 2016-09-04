@@ -3,14 +3,14 @@
  *  OpenGL error 1285 at top endDraw(): out of memory
  */
 
-import gohai.glvideo.GLVideo;
+import gohai.glvideo.GLMovie;
 import gohai.glvideo.PerspectiveTransform;
 import gohai.glvideo.WarpPerspective;
 import java.awt.geom.Point2D;
 
 PImage[] sources = new PImage[2];
 int selSource = 0;
-GLVideo video;
+GLMovie video;
 
 PVector corners[] = new PVector[4];
 int selCorner = -1;
