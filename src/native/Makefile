@@ -21,8 +21,6 @@ else ifeq ($(PLATFORM),Linux)
 	CFLAGS += -I$(shell dirname $(shell realpath $(shell which javac)))/../include/linux
 	CFLAGS += $(shell pkg-config gstreamer-1.0 --cflags-only-I)
 	CFLAGS += $(shell pkg-config gstreamer-gl-1.0 --cflags-only-I)
-	# not sure if needed
-	CFLAGS += $(shell pkg-config gl --cflags-only-I)
 else ifeq ($(PLATFORM),Darwin)
 	# this is currently 64-bit only
 	# download and install latest gstreamer-1.0-devel package for x86_64 from
