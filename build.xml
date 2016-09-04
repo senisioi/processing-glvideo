@@ -48,6 +48,7 @@
       <zipfileset dir="." prefix="glvideo">
         <exclude name="bin/**"/>
         <exclude name="examples/**/application.*/**"/>
+        <exclude name="library/*/gstreamer-1.0/registry"/>
         <exclude name="**/sftp-config.json"/>
       </zipfileset>
     </zip>
