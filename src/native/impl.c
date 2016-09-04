@@ -268,7 +268,8 @@ init_pipeline_player (GLVIDEO_STATE_T * state, const gchar * pipeline)
       NULL);
   gst_object_unref (pad);
 
-  // XXX: still needed?
+  // this seems to be necessary, otherwise close will complain about
+  // gst_object_unref with object == NULL
   state->vsink = gst_object_ref (vsink);
   return TRUE;
 }
