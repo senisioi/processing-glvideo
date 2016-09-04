@@ -62,25 +62,37 @@ public class GLVideo extends PImage {
     this.parent = parent;
     this.flags = flags;
 
+    boolean use_host_gstreamer = false;
     if (!loaded) {
       System.loadLibrary("glvideo");
       loaded = true;
 
       String jar = GLVideo.class.getProtectionDomain().getCodeSource().getLocation().getPath();
       String nativeLib = jar.substring(0, jar.lastIndexOf(File.separatorChar));
-      // set a custom plugin path and prevent globally installed libraries from being loaded
-      gstreamer_setEnvVar("GST_PLUGIN_SYSTEM_PATH_1_0", "");
-      if (parent.platform == PConstants.MACOSX) {
-        // the second plugin path is necessary since the directory structure for exported applications
-        // doesn't contain a linux-armv6hf directory
+
+      if (parent.platform == PConstants.LINUX) {
+        if ("arm".equals(System.getProperty("os.arch"))) {
+          // set a custom plugin path and prevent globally installed libraries from being loaded
+          gstreamer_setEnvVar("GST_PLUGIN_SYSTEM_PATH_1_0", "");
+          // the second plugin path is necessary since the directory structure for exported applications
+          // doesn't contain a linux-armv6hf directory
+          gstreamer_setEnvVar("GST_PLUGIN_PATH_1_0", nativeLib + "/linux-armv6hf/gstreamer-1.0/:" + nativeLib + "/gstreamer-1.0/");
+          gstreamer_setEnvVar("GST_REGISTRY_1_0", nativeLib + "/linux-armv6hf/gstreamer-1.0/registry");
+          // keep a local registry
+          gstreamer_setEnvVar("GST_REGISTRY_FORK", "no");
+        } else {
+          // Desktop Linux uses host system GStreamer
+          use_host_gstreamer = true;
+        }
+      } else if (parent.platform == PConstants.MACOSX) {
+        gstreamer_setEnvVar("GST_PLUGIN_SYSTEM_PATH_1_0", "");
         gstreamer_setEnvVar("GST_PLUGIN_PATH_1_0", nativeLib + "/macosx/gstreamer-1.0/:" + nativeLib + "/gstreamer-1.0/");
-        // keep a local registry
         gstreamer_setEnvVar("GST_REGISTRY_1_0", nativeLib + "/macosx/gstreamer-1.0/registry");
+        gstreamer_setEnvVar("GST_REGISTRY_FORK", "no");
       } else {
-        gstreamer_setEnvVar("GST_PLUGIN_PATH_1_0", nativeLib + "/linux-armv6hf/gstreamer-1.0/:" + nativeLib + "/gstreamer-1.0/");
-        gstreamer_setEnvVar("GST_REGISTRY_1_0", nativeLib + "/linux-armv6hf/gstreamer-1.0/registry");
+        throw new RuntimeException("Windows support is not implemented currently");
       }
-      gstreamer_setEnvVar("GST_REGISTRY_FORK", "no");
+
       // DEBUG
       //gstreamer_setEnvVar("GST_DEBUG_NO_COLOR", "1");
       //gstreamer_setEnvVar("GST_DEBUG", "3");
@@ -93,6 +105,9 @@ public class GLVideo extends PImage {
     }
 
     if (error) {
+      if (use_host_gstreamer) {
+        System.err.println("Make sure the following GStreamer packages are installed on the host system: gstreamer 1.x, gst-plugins-base, gst-plugins-good, gst-plugins-bad, gst-ffmpeg or gst-libav.");
+      }
       throw new RuntimeException("Could not load GStreamer");
     }
   }

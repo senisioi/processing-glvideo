@@ -40,8 +40,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <gst/gl/gl.h>
 #ifdef __APPLE__
 #include <gst/gl/cocoa/gstglcontext_cocoa.h>
-#else
+#elif GLES2
 #include <gst/gl/egl/gstgldisplay_egl.h>
+#else
+#include <GL/glx.h>
+#include <gst/gl/x11/gstgldisplay_x11.h>
 #endif
 #include <stdbool.h>
 #include <stdlib.h>
@@ -71,10 +74,13 @@ static GThread *thread;
 static GMainLoop *mainloop;
 #ifdef __APPLE__
 static guintptr context;
-#else
+#elif GLES2
 static EGLDisplay display;
 static EGLSurface surface;
 static EGLContext context;
+#else
+static Display* display;
+static GLXContext context;
 #endif
 
 static void
@@ -314,11 +320,15 @@ JNIEXPORT jboolean JNICALL Java_gohai_glvideo_GLVideo_gstreamer_1init
     // save the current EGL context
 #ifdef __APPLE__
     context = gst_gl_context_cocoa_get_current_context ();
-#else
+#elif GLES2
     display = eglGetCurrentDisplay ();
     surface = eglGetCurrentSurface (0);
     context = eglGetCurrentContext ();
+#else
+    display = glXGetCurrentDisplay ();
+    context = glXGetCurrentContext ();
 #endif
+
     if (!context) {
       g_printerr ("GLVideo requires the P2D or P3D renderer.\n");
       g_error_free (error);
@@ -359,11 +369,16 @@ JNIEXPORT jlong JNICALL Java_gohai_glvideo_GLVideo_gstreamer_1open_1pipeline
     state->gl_context =
       gst_gl_context_new_wrapped (GST_GL_DISPLAY (state->gst_display),
       context, GST_GL_PLATFORM_CGL, gst_gl_context_get_current_gl_api (GST_GL_PLATFORM_CGL, NULL, NULL));
-#else
+#elif GLES2
     state->gst_display = gst_gl_display_egl_new_with_egl_display (display);
     state->gl_context =
       gst_gl_context_new_wrapped (GST_GL_DISPLAY (state->gst_display),
       (guintptr) context, GST_GL_PLATFORM_EGL, GST_GL_API_GLES2);
+#else
+    state->gst_display = gst_gl_display_x11_new_with_display (display);
+    state->gl_context =
+      gst_gl_context_new_wrapped (GST_GL_DISPLAY (state->gst_display),
+      (guintptr) context, GST_GL_PLATFORM_GLX, GST_GL_API_OPENGL);
 #endif
 
     // setup mutex to protect double buffering scheme

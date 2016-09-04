@@ -2,18 +2,28 @@ TARGET := libglvideo.so
 OBJS := impl.o
 CC := gcc
 PLATFORM := $(shell uname -s)
+RPI := $(shell test -e /opt/vc/include; echo $$?)
 
 
 CFLAGS := -fPIC -O2 -mtune=native
-ifeq ($(PLATFORM),Linux)
+ifeq ($(RPI),0)
+	# Raspberry Pi
+	CFLAGS += -DGLES2 -DRPI
 	CFLAGS += -I$(shell dirname $(shell realpath $(shell which javac)))/../include
 	CFLAGS += -I$(shell dirname $(shell realpath $(shell which javac)))/../include/linux
 	CFLAGS += -I/opt/vc/include
 	CFLAGS += -I/opt/vc/include/interface/vcos/pthreads
 	CFLAGS += $(shell pkg-config gstreamer-1.0 --cflags-only-I)
 	CFLAGS += $(shell pkg-config gstreamer-gl-1.0 --cflags-only-I)
-endif
-ifeq ($(PLATFORM),Darwin)
+else ifeq ($(PLATFORM),Linux)
+	# regular Linux
+	CFLAGS += -I$(shell dirname $(shell realpath $(shell which javac)))/../include
+	CFLAGS += -I$(shell dirname $(shell realpath $(shell which javac)))/../include/linux
+	CFLAGS += $(shell pkg-config gstreamer-1.0 --cflags-only-I)
+	CFLAGS += $(shell pkg-config gstreamer-gl-1.0 --cflags-only-I)
+	# not sure if needed
+	CFLAGS += $(shell pkg-config gl --cflags-only-I)
+else ifeq ($(PLATFORM),Darwin)
 	# this is currently 64-bit only
 	# download and install latest gstreamer-1.0-devel package for x86_64 from
 	# https://gstreamer.freedesktop.org/data/pkg/osx/
@@ -22,7 +32,8 @@ ifeq ($(PLATFORM),Darwin)
 endif
 
 LDFLAGS := -shared
-ifeq ($(PLATFORM),Linux)
+ifeq ($(RPI),0)
+	# Raspberry Pi
 	LDFLAGS += -L/opt/vc/lib
 	LDFLAGS += $(shell pkg-config gstreamer-1.0 --libs)
 	LDFLAGS += $(shell pkg-config gstreamer-gl-1.0 --libs)
@@ -30,8 +41,15 @@ ifeq ($(PLATFORM),Linux)
 	LDFLAGS += -Wl,-R,'$$ORIGIN'
 	TARGET_DIR = linux-armv6hf
 	TARGET_FILE = $(TARGET)
-endif
-ifeq ($(PLATFORM),Darwin)
+else ifeq ($(PLATFORM),Linux)
+	# regular Linux
+	LDFLAGS += $(shell pkg-config gstreamer-1.0 --libs)
+	# pkg-config for gstreamer-gl-1.0 on Fedora pulls in a lot of unrelated dependencies, e.g. wayland
+	# try this instead
+	LDFLAGS += -lgstgl-1.0 -lGL
+	TARGET_DIR = linux64
+	TARGET_FILE = $(TARGET)
+else ifeq ($(PLATFORM),Darwin)
 	# this is currently 64-bit only
 	LDFLAGS += -L../../library/macosx
 	LDFLAGS += -lgstgl-1.0.0 -lgstreamer-1.0.0 -lgstapp-1.0.0 -lglib-2.0.0 -lgobject-2.0.0
