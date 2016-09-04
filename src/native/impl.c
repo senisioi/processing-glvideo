@@ -88,23 +88,7 @@ handle_buffer (GLVIDEO_STATE_T * state, GstBuffer * buffer)
 
   state->next_buffer = gst_buffer_ref (buffer);
   state->next_tex = ((GstGLMemory *) mem)->tex_id;
-  state->handled_frame = false;
   g_mutex_unlock (&state->buffer_lock);
-
-  // wait for getFrame to read next_buffer before we return
-  // this helps with 1080p25 videos on the Pi2
-  bool do_exit = false;
-  int tries = 20000;
-  do {
-    pthread_yield();
-    g_mutex_lock (&state->buffer_lock);
-    if (state->handled_frame) {
-      do_exit = true;
-    }
-    g_mutex_unlock (&state->buffer_lock);
-    // give up after 20000 tries (~40ms on Pi2)
-    // this does not work with clock_gettime()
-  } while(!do_exit && 0 < --tries);
 }
 
 static void
@@ -417,7 +401,6 @@ JNIEXPORT jint JNICALL Java_gohai_glvideo_GLVideo_gstreamer_1getFrame
     }
     state->current_buffer = state->next_buffer;
     state->current_tex = state->next_tex;
-    state->handled_frame = true;
     state->next_buffer = NULL;
     state->next_tex = 0;
     g_mutex_unlock (&state->buffer_lock);

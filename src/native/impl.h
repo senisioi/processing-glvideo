@@ -15,7 +15,6 @@ typedef struct {
   GLuint current_tex;
   GstBuffer *next_buffer;
   GLuint next_tex;
-  bool handled_frame;
 
   int flags;
 
