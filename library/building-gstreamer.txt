@@ -16,7 +16,7 @@ sudo ldconfig
 
 git clone --recursive git://anongit.freedesktop.org/gstreamer/gstreamer
 cd gstreamer
-git checkout tags/1.9.2
+git checkout tags/1.8.3
 git submodule update
 ./autogen.sh --prefix=/usr/local --disable-debug --disable-gtk-doc
 make -j3 -l3
@@ -28,7 +28,7 @@ cd ..
 
 git clone --recursive git://anongit.freedesktop.org/gstreamer/gst-plugins-base
 cd gst-plugins-base
-git checkout tags/1.9.2
+git checkout tags/1.8.3
 git submodule update
 ./autogen.sh --prefix=/usr/local --disable-debug --disable-gtk-doc
 make -j3 -l3
@@ -38,7 +38,7 @@ cd ..
 
 git clone --recursive git://anongit.freedesktop.org/gstreamer/gst-plugins-good
 cd gst-plugins-good
-git checkout tags/1.9.2
+git checkout tags/1.8.3
 git submodule update
 ./autogen.sh --prefix=/usr/local --disable-debug --disable-gtk-doc --disable-libpng --disable-oss --disable-oss4
 make -j3 -l3
@@ -48,7 +48,7 @@ cd ..
 
 git clone --recursive git://anongit.freedesktop.org/gstreamer/gst-plugins-bad
 cd gst-plugins-bad
-git checkout tags/1.9.2
+git checkout tags/1.8.3
 git submodule update
 ./autogen.sh --prefix=/usr/local --disable-debug --disable-decklink --disable-dvb --disable-fbdev --disable-gtk-doc --disable-x11 --disable-opengl --disable-glx --enable-gles2 --disable-vcd --disable-wayland --with-gles2-module-name=/opt/vc/lib/libGLESv2.so --with-egl-module-name=/opt/vc/lib/libEGL.so
 make -j3 -l3
@@ -69,7 +69,7 @@ cd ..
 
 git clone --recursive git://anongit.freedesktop.org/gstreamer/gst-ffmpeg
 cd gst-ffmpeg
-git checkout tags/1.9.2
+git checkout tags/1.8.3
 git submodule update
 ./autogen.sh --prefix=/usr/local --disable-debug --disable-gtk-doc
 make -j3 -l3
