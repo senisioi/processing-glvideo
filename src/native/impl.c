@@ -120,7 +120,11 @@ handle_buffer (GLVIDEO_STATE_T * state, GstBuffer * buffer)
   bool do_exit = false;
   int tries = 20000;
   do {
+#ifdef __APPLE__
+    pthread_yield_np();
+#else
     pthread_yield();
+#endif
     g_mutex_lock (&state->buffer_lock);
     if (state->handled_frame) {
       do_exit = true;
