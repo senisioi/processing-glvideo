@@ -82,5 +82,6 @@ install_macosx_libraries:
 	cp /Library/Frameworks/GStreamer.framework/Libraries/gstreamer-1.0/*.so ../../library/macosx/gstreamer-1.0
 	cd ../../library/macosx/gstreamer-1.0 && osxrelocator . "/Library/Frameworks/GStreamer.framework/Versions/1.0/lib" "@loader_path/../" && cd ../../../src/native
 	# install name is not relevant for those
+	python ./macosx_remove_extra_libs.py
 
 .PHONY: iface.h clean install_macosx_libraries
