@@ -228,13 +228,21 @@ eos_cb (GstBus * bus, GstMessage * msg, GLVIDEO_STATE_T * state)
 static gboolean
 init_pipeline_player (GLVIDEO_STATE_T * state, const gchar * pipeline)
 {
-  const char pipeline_tail[] =
-    " ! glupload name=glup ! glcolorconvert ! capsfilter name=filter ! fakesink name=vsink";
+  const char pipeline_vsink[] = "glupload name=glup ! glcolorconvert ! capsfilter name=filter ! fakesink name=vsink";
+  char *pipeline_final = calloc (strlen (pipeline) + 3 + strlen(pipeline_vsink) + 1, sizeof (char));
 
-  // assemble final pipeline
-  char *pipeline_final = calloc (strlen (pipeline) + strlen (pipeline_tail) + 1, sizeof (char));
-  strcat (pipeline_final, pipeline);
-  strcat (pipeline_final, pipeline_tail);
+  char *has_empty_videosink = strstr (pipeline, "video-sink=\"\"");
+  if (has_empty_videosink) {
+    // fill in our sink as the pipeline's (playbin's) video-sink property
+    strncat(pipeline_final, pipeline, has_empty_videosink-pipeline+12);
+    strcat(pipeline_final, pipeline_vsink);
+    strcat(pipeline_final, has_empty_videosink+12);
+  } else {
+    // append our sink at the end
+    strcat (pipeline_final, pipeline);
+    strcat (pipeline_final, " ! ");
+    strcat (pipeline_final, pipeline_vsink);
+  }
 
   GError *error = NULL;
   state->pipeline = gst_parse_launch (pipeline_final, &error);
@@ -247,9 +255,19 @@ init_pipeline_player (GLVIDEO_STATE_T * state, const gchar * pipeline)
     free (pipeline_final);
   }
 
+  // look for video sink elements
   GstElement *glup = gst_bin_get_by_name (GST_BIN (state->pipeline), "glup");
   GstElement *capsfilter = gst_bin_get_by_name (GST_BIN (state->pipeline), "filter");
   GstElement *vsink = gst_bin_get_by_name (GST_BIN (state->pipeline), "vsink");
+
+  // if they're not in the main pipeline, look in its video-sink bin
+  if (!glup) {
+    GstElement *videosink;
+    g_object_get(state->pipeline, "video-sink", &videosink, NULL);
+    glup = gst_bin_get_by_name (GST_BIN (videosink), "glup");
+    capsfilter = gst_bin_get_by_name (GST_BIN (videosink), "filter");
+    vsink = gst_bin_get_by_name (GST_BIN (videosink), "vsink");
+  }
 
   g_object_set (capsfilter, "caps",
       gst_caps_from_string ("video/x-raw(memory:GLMemory),format=RGBA"), NULL);
