@@ -4,6 +4,9 @@
  *
  *  More about GStreamer pipelines:
  *  https://gstreamer.freedesktop.org/data/doc/gstreamer/head/manual/html/
+ *
+ *	This will work best with upcoming releases of GStreamer, currently in
+ *	the testing phase.
  */
 
 import gohai.glvideo.*;
