@@ -41,7 +41,13 @@ public class GLMovie extends GLVideo {
       uri = filenameToUri(fn_or_uri);
     }
 
-    handle = gstreamer_open_pipeline("playbin uri=" + uri + " video-sink=\"\"", flags);
+    // set the mute property if the flag is set
+    String pipeline_extra = "";
+    if ((flags & GLVideo.MUTE) != 0) {
+      pipeline_extra += " mute=true";
+    }
+
+    handle = gstreamer_open_pipeline("playbin uri=" + uri + " video-sink=\"\"" + pipeline_extra, flags);
     if (handle == 0) {
       throw new RuntimeException("Could not load video");
     }
