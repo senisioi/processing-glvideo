@@ -6,15 +6,6 @@ typedef struct {
   GstElement *vsink;
   GstCaps *caps;
 
-#ifdef __APPLE__
-  GstGLDisplay *gst_display;
-#elif GLES2
-  GstGLDisplayEGL *gst_display;
-#else
-  GstGLDisplayX11 *gst_display;
-#endif
-  GstGLContext *gl_context;
-
   GMutex buffer_lock;
   // protects the following
   GstBuffer *current_buffer;
