@@ -78,7 +78,6 @@ static GstGLDisplayEGL *gst_display;
 #else
 static GstGLDisplayX11 *gst_display;
 #endif
-static GstGLContext *gl_context;
 
 static GThread *thread;
 static GMainLoop *mainloop;
@@ -171,7 +170,7 @@ query_cb (GstPad * pad, GstPadProbeInfo * info, gpointer user_data)
     {
       if (gst_gl_handle_context_query (state->pipeline, query,
               (GstGLDisplay **) & gst_display,
-              (GstGLContext **) & gl_context))
+              (GstGLContext **) & state->gl_context))
         return GST_PAD_PROBE_HANDLED;
       break;
     }
@@ -391,25 +390,29 @@ JNIEXPORT jlong JNICALL Java_gohai_glvideo_GLVideo_gstreamer_1open_1pipeline
     state->flags = flags;
     state->rate = 1.0f;
 
-    // setup context sharing if we haven't done so already
-    if (!gl_context) {
+    // setup context sharing
 #ifdef __APPLE__
-    gst_display = gst_gl_display_new ();
-    gl_context =
+    if (!gst_display) {
+      gst_display = gst_gl_display_new ();
+    }
+    state->gl_context =
       gst_gl_context_new_wrapped (GST_GL_DISPLAY (gst_display),
       context, GST_GL_PLATFORM_CGL, gst_gl_context_get_current_gl_api (GST_GL_PLATFORM_CGL, NULL, NULL));
 #elif GLES2
-    gst_display = gst_gl_display_egl_new_with_egl_display (display);
-    gl_context =
+    if (!gst_display) {
+      gst_display = gst_digst_gl_display_egl_new_with_egl_display (display);
+    }
+    state->gl_context =
       gst_gl_context_new_wrapped (GST_GL_DISPLAY (gst_display),
       (guintptr) context, GST_GL_PLATFORM_EGL, GST_GL_API_GLES2);
 #else
-    gst_display = gst_gl_display_x11_new_with_display (display);
-    gl_context =
+    if (!gst_display) {
+      gst_display = gst_gl_display_x11_new_with_display (display);
+    }
+    state->gl_context =
       gst_gl_context_new_wrapped (GST_GL_DISPLAY (gst_display),
       (guintptr) context, GST_GL_PLATFORM_GLX, GST_GL_API_OPENGL);
 #endif
-    }
 
     // setup mutex to protect double buffering scheme
     g_mutex_init (&state->buffer_lock);
@@ -641,8 +644,8 @@ JNIEXPORT void JNICALL Java_gohai_glvideo_GLVideo_gstreamer_1close
     }
     g_mutex_unlock (&state->buffer_lock);
 
+    gst_object_unref (state->gl_context);
     // XXX
-    //gst_object_unref (gl_context);
     //gst_object_unref (gst_display);
 
     gst_object_unref (state->vsink);

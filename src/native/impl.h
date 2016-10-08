@@ -6,6 +6,8 @@ typedef struct {
   GstElement *vsink;
   GstCaps *caps;
 
+  GstGLContext *gl_context;
+
   GMutex buffer_lock;
   // protects the following
   GstBuffer *current_buffer;
