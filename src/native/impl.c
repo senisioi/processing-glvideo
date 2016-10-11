@@ -650,15 +650,15 @@ JNIEXPORT void JNICALL Java_gohai_glvideo_GLVideo_gstreamer_1close
     }
     g_mutex_unlock (&state->buffer_lock);
 
-    gst_object_unref (state->gl_context);
-    gst_object_unref (gst_display);
-
     gst_object_unref (state->vsink);
     gst_object_unref (state->pipeline);
 
     if (state->caps) {
       gst_caps_unref (state->caps);
     }
+
+    gst_object_unref (state->gl_context);
+    gst_object_unref (gst_display);
 
     g_mutex_clear (&state->buffer_lock);
 
