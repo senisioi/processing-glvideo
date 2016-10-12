@@ -62,7 +62,34 @@ public class GLVideo extends PImage {
     this.parent = parent;
     this.flags = flags;
 
+    loadGStreamer();
+  }
+
+  public GLVideo(PApplet parent) {
+    this(parent, 0);
+  }
+
+  public GLVideo(PApplet parent, String pipeline, int flags) {
+    this(parent, flags);
+
+    handle = gstreamer_open_pipeline(pipeline, flags);
+    if (handle == 0) {
+      throw new RuntimeException("Could not open pipeline");
+    }
+  }
+
+  public GLVideo(PApplet parent, String pipeline) {
+    this(parent, pipeline, 0);
+  }
+
+  /**
+   *  Load the native glvideo library, setup the environment for GStreamer and initialize it
+   *  through gstreamer_init
+   *  This is only done once, globally.
+   */
+  protected static void loadGStreamer() {
     boolean use_host_gstreamer = false;
+
     if (!loaded) {
       System.loadLibrary("glvideo");
       loaded = true;
@@ -70,7 +97,7 @@ public class GLVideo extends PImage {
       String jar = GLVideo.class.getProtectionDomain().getCodeSource().getLocation().getPath();
       String nativeLib = jar.substring(0, jar.lastIndexOf(File.separatorChar));
 
-      if (parent.platform == PConstants.LINUX) {
+      if (PApplet.platform == PConstants.LINUX) {
         if ("arm".equals(System.getProperty("os.arch"))) {
           // set a custom plugin path and prevent globally installed libraries from being loaded
           gstreamer_setEnvVar("GST_PLUGIN_SYSTEM_PATH_1_0", "");
@@ -84,7 +111,7 @@ public class GLVideo extends PImage {
           // Desktop Linux uses host system GStreamer
           use_host_gstreamer = true;
         }
-      } else if (parent.platform == PConstants.MACOSX) {
+      } else if (PApplet.platform == PConstants.MACOSX) {
         gstreamer_setEnvVar("GST_PLUGIN_SYSTEM_PATH_1_0", "");
         gstreamer_setEnvVar("GST_PLUGIN_PATH_1_0", nativeLib + "/macosx/gstreamer-1.0/:" + nativeLib + "/gstreamer-1.0/");
         gstreamer_setEnvVar("GST_REGISTRY_1_0", nativeLib + "/macosx/gstreamer-1.0/registry");
@@ -110,23 +137,6 @@ public class GLVideo extends PImage {
       }
       throw new RuntimeException("Could not load GStreamer");
     }
-  }
-
-  public GLVideo(PApplet parent) {
-    this(parent, 0);
-  }
-
-  public GLVideo(PApplet parent, String pipeline, int flags) {
-    this(parent, flags);
-
-    handle = gstreamer_open_pipeline(pipeline, flags);
-    if (handle == 0) {
-      throw new RuntimeException("Could not open pipeline");
-    }
-  }
-
-  public GLVideo(PApplet parent, String pipeline) {
-    this(parent, pipeline, 0);
   }
 
   public void dispose() {
