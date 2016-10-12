@@ -50,4 +50,12 @@ public class GLCapture extends GLVideo {
   public GLCapture(PApplet parent, int index) {
     this(parent, index, 0);
   }
+
+  public static void list() {
+    // make sure the library is loaded
+    loadGStreamer();
+
+    gstreamer_getDevices("Video/Source");
+    // XXX: return something sensible
+  }
 }

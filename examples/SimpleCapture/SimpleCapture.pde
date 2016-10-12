@@ -15,6 +15,7 @@ GLCapture video;
 
 void setup() {
   size(320, 240, P2D);
+  GLCapture.list();
   // this will use the first recognized camera
   video = new GLCapture(this, 0);
   video.play();

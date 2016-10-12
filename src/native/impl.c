@@ -380,6 +380,55 @@ JNIEXPORT jstring JNICALL Java_gohai_glvideo_GLVideo_gstreamer_1filenameToUri
     return ret;
   }
 
+JNIEXPORT void JNICALL Java_gohai_glvideo_GLVideo_gstreamer_1getDevices
+  (JNIEnv * env, jclass cls, jstring _filter) {
+    GList *devices = NULL;
+    GList *iter = NULL;
+
+    GstDeviceMonitor *monitor = gst_device_monitor_new ();
+
+    const char *filter = (*env)->GetStringUTFChars (env, _filter, JNI_FALSE);
+    gst_device_monitor_add_filter (monitor, filter, NULL);
+    (*env)->ReleaseStringUTFChars (env, _filter, filter);
+
+    devices = gst_device_monitor_get_devices (monitor);
+
+    if (!devices) {
+      fprintf (stderr, "No devices\n");
+    }
+
+    for (iter = devices; iter != NULL; iter = iter->next) {
+      GstDevice *device = iter->data;
+
+      gchar *display_name = gst_device_get_display_name (device);
+      fprintf (stderr, "%s\n", display_name);
+      g_free (display_name);
+
+      gchar *class = gst_device_get_device_class (device);
+      fprintf (stderr, "\tclass: %s\n", class);
+      g_free (class);
+
+      GstCaps *caps = gst_device_get_caps (device);
+      fprintf (stderr, "\tcaps: %s\n", gst_caps_to_string (caps));
+      gst_caps_unref (caps);
+
+      GstStructure *props = gst_device_get_properties (device);
+      gchar *temp = gst_structure_to_string (props);
+      fprintf (stderr, "\tadditional properties: %s\n", temp);
+      g_free (temp);
+      gst_structure_free (props);
+
+      // additional methods:
+      // gst_device_create_element
+    }
+
+    // XXX: unclear how teardown is supposed to work
+    gst_device_monitor_stop (monitor);
+    gst_object_unref (monitor);
+
+    // XXX: return something sensible
+  }
+
 JNIEXPORT jlong JNICALL Java_gohai_glvideo_GLVideo_gstreamer_1open_1pipeline
   (JNIEnv * env, jclass cls, jstring _pipeline, jint flags) {
     GLVIDEO_STATE_T *state = malloc (sizeof (GLVIDEO_STATE_T));
