@@ -9,6 +9,8 @@ extern "C" {
 #endif
 #undef gohai_glvideo_GLVideo_MUTE
 #define gohai_glvideo_GLVideo_MUTE 1L
+#undef gohai_glvideo_GLVideo_NO_SYNC
+#define gohai_glvideo_GLVideo_NO_SYNC 2L
 /*
  * Class:     gohai_glvideo_GLVideo
  * Method:    gstreamer_setEnvVar

@@ -55,6 +55,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define likely(x)   __builtin_expect((x),1)
 #define unlikely(x) __builtin_expect((x),0)
 
+// XXX: do we still need GST_PLAY_FLAG_SOFT_VOLUME on RPi?
 typedef enum
 {
   GST_PLAY_FLAG_VIDEO = (1 << 0),
@@ -276,7 +277,7 @@ init_pipeline_player (GLVIDEO_STATE_T * state, const gchar * pipeline)
       "signal-handoffs", TRUE, NULL);
 
   // handle NO_SYNC flag
-  if ((state->flags & 2)) {
+  if ((state->flags & gohai_glvideo_GLVideo_NO_SYNC)) {
     g_object_set (vsink, "sync", FALSE, NULL);
   } else {
     g_object_set (vsink, "sync", TRUE, NULL);
