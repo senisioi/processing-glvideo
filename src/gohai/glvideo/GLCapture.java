@@ -31,6 +31,26 @@ public class GLCapture extends GLVideo {
 
   protected static String[][] devices;
 
+  public GLCapture(PApplet parent) {
+    super(parent, 0);
+
+    // open the first capture device
+    if (devices == null) {
+      devices = gstreamer_getDevices("Video/Source");
+    }
+
+    if (devices.length == 0) {
+      throw new RuntimeException("No capture devices found");
+    }
+
+    handle = gstreamer_open_device(devices[0][0], 0);
+    if (handle == 0) {
+      throw new RuntimeException("Could not open capture device " + devices[0][0]);
+    } else {
+      throw new RuntimeException("Pipeline bringup not implemented yet");
+    }
+  }
+
   public GLCapture(PApplet parent, int index) {
     super(parent, 0);
     String pipeline;
