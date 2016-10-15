@@ -29,6 +29,8 @@ import processing.core.*;
  */
 public class GLCapture extends GLVideo {
 
+  protected static String[][] devices;
+
   public GLCapture(PApplet parent, int index) {
     super(parent, 0);
     String pipeline;
@@ -50,13 +52,32 @@ public class GLCapture extends GLVideo {
   public static String[] list() {
     // make sure the library is loaded
     loadGStreamer();
-
-    String[][] devices = gstreamer_getDevices("Video/Source");
+    // re-fetch the devices list, even if we have it already
+    devices = gstreamer_getDevices("Video/Source");
 
     String[] device_names = new String[devices.length];
     for (int i=0; i < devices.length; i++) {
       device_names[i] = devices[i][0];
     }
     return device_names;
+  }
+
+  public static String[] configs(String deviceName) {
+    if (devices == null) {
+      loadGStreamer();
+      devices = gstreamer_getDevices("Video/Source");
+    }
+
+    for (int i=0; i < devices.length; i++) {
+      if (devices[i][0].equals(deviceName)) {
+        if (devices[i][2].equals("")) {
+          return new String[0];
+        } else {
+          return devices[i][2].split("; ");
+        }
+      }
+    }
+
+    return null;
   }
 }
