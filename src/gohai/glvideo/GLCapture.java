@@ -49,6 +49,17 @@ public class GLCapture extends GLVideo {
     }
   }
 
+  public GLCapture(PApplet parent, String deviceName) {
+    super(parent, 0);
+
+    handle = gstreamer_open_device(deviceName, 0);
+    if (handle == 0) {
+      throw new RuntimeException("Could not open capture device " + deviceName);
+    } else {
+      throw new RuntimeException("Pipeline bringup not implemented yet");
+    }
+  }
+
   public static String[] list() {
     // make sure the library is loaded
     loadGStreamer();

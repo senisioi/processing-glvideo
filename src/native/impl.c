@@ -432,9 +432,6 @@ JNIEXPORT jobjectArray JNICALL Java_gohai_glvideo_GLVideo_gstreamer_1getDevices
 
       // add to result
       (*env)->SetObjectArrayElement(env, ret, i, row);
-
-      // additional methods:
-      // gst_device_create_element
     }
 
     // XXX: unclear how teardown is supposed to work
@@ -515,6 +512,40 @@ JNIEXPORT jlong JNICALL Java_gohai_glvideo_GLVideo_gstreamer_1open_1pipeline
     gst_element_set_state (state->pipeline, GST_STATE_PAUSED);
 
     return (intptr_t) state;
+  }
+
+JNIEXPORT jlong JNICALL Java_gohai_glvideo_GLVideo_gstreamer_1open_1device
+  (JNIEnv * env, jclass cls, jstring _deviceName, jint flags) {
+    GList *iter = NULL;
+    // XXX: or reuse the same monitor?
+    GstDeviceMonitor *monitor = gst_device_monitor_new ();
+    const char *deviceName = (*env)->GetStringUTFChars (env, _deviceName, JNI_FALSE);
+    GstElement *src = NULL;
+
+    iter = gst_device_monitor_get_devices (monitor);
+    for (; iter != NULL; iter = iter->next) {
+      GstDevice *device = iter->data;
+      gchar *display_name = gst_device_get_display_name (device);
+      if (!strcmp (display_name, deviceName)) {
+        // match, create element
+        g_free (display_name);
+        src = gst_device_create_element (device, NULL);
+        break;
+      }
+      g_free (display_name);
+    }
+
+    gst_device_monitor_stop (monitor);
+    gst_object_unref (monitor);
+
+    (*env)->ReleaseStringUTFChars (env, _deviceName, deviceName);
+
+    if (!src) {
+      return 0L;
+    }
+
+    // XXX: continue
+    return 1;
   }
 
 JNIEXPORT jboolean JNICALL Java_gohai_glvideo_GLVideo_gstreamer_1isAvailable
