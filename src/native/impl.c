@@ -519,6 +519,7 @@ JNIEXPORT jlong JNICALL Java_gohai_glvideo_GLVideo_gstreamer_1open_1device
     GList *iter = NULL;
     // XXX: or reuse the same monitor?
     GstDeviceMonitor *monitor = gst_device_monitor_new ();
+    gst_device_monitor_add_filter (monitor, "Video/Source", NULL);
     const char *deviceName = (*env)->GetStringUTFChars (env, _deviceName, JNI_FALSE);
     GstElement *src = NULL;
 
