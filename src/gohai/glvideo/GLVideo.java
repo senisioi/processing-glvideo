@@ -362,6 +362,7 @@ public class GLVideo extends PImage {
   public static native boolean gstreamer_init();
   public static native String gstreamer_filenameToUri(String fn);
   public static native String[][] gstreamer_getDevices(String filter);
+  // XXX: rename to openPipeline, openDevice
   public static native long gstreamer_open_pipeline(String pipeline, int flags);
   public static native long gstreamer_open_device(String deviceName, int flags);
   public static native boolean gstreamer_isAvailable(long handle);
