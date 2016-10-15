@@ -35,19 +35,26 @@ public class GLCapture extends GLVideo {
     super(parent, 0);
 
     // open the first capture device
-    if (devices == null) {
-      devices = gstreamer_getDevices("Video/Source");
-    }
+    if (PApplet.platform == LINUX) {
+      if (devices == null) {
+        devices = gstreamer_getDevices("Video/Source");
+      }
 
-    if (devices.length == 0) {
-      throw new RuntimeException("No capture devices found");
-    }
+      if (devices.length == 0) {
+        throw new RuntimeException("No capture devices found");
+      }
 
-    handle = gstreamer_open_device(devices[0][0], 0);
-    if (handle == 0) {
-      throw new RuntimeException("Could not open capture device " + devices[0][0]);
+      handle = gstreamer_open_device(devices[0][0], 0);
+      if (handle == 0) {
+        throw new RuntimeException("Could not open capture device " + devices[0][0]);
+      }
+    } else if (PApplet.platform == MACOSX) {
+      handle = gstreamer_open_pipeline("qtkitvideosrc device-index=0", 0);
+      if (handle == 0) {
+        throw new RuntimeException("Could not open capture device");
+      }
     } else {
-      throw new RuntimeException("Pipeline bringup not implemented yet");
+      throw new RuntimeException("Currently not supported on Windows");
     }
   }
 
