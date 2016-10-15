@@ -38,9 +38,9 @@ JNIEXPORT jstring JNICALL Java_gohai_glvideo_GLVideo_gstreamer_1filenameToUri
 /*
  * Class:     gohai_glvideo_GLVideo
  * Method:    gstreamer_getDevices
- * Signature: (Ljava/lang/String;)V
+ * Signature: (Ljava/lang/String;)[[Ljava/lang/String;
  */
-JNIEXPORT void JNICALL Java_gohai_glvideo_GLVideo_gstreamer_1getDevices
+JNIEXPORT jobjectArray JNICALL Java_gohai_glvideo_GLVideo_gstreamer_1getDevices
   (JNIEnv *, jclass, jstring);
 
 /*

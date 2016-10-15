@@ -380,10 +380,11 @@ JNIEXPORT jstring JNICALL Java_gohai_glvideo_GLVideo_gstreamer_1filenameToUri
     return ret;
   }
 
-JNIEXPORT void JNICALL Java_gohai_glvideo_GLVideo_gstreamer_1getDevices
+JNIEXPORT jobjectArray JNICALL Java_gohai_glvideo_GLVideo_gstreamer_1getDevices
   (JNIEnv * env, jclass cls, jstring _filter) {
     GList *devices = NULL;
     GList *iter = NULL;
+    jclass stringClass = (*env)->FindClass (env, "java/lang/String");
 
     GstDeviceMonitor *monitor = gst_device_monitor_new ();
 
@@ -393,30 +394,44 @@ JNIEXPORT void JNICALL Java_gohai_glvideo_GLVideo_gstreamer_1getDevices
 
     devices = gst_device_monitor_get_devices (monitor);
 
-    if (!devices) {
-      fprintf (stderr, "No devices\n");
+    // count number of results
+    int num_devices = 0;
+    for (iter = devices; iter != NULL; iter = iter->next) {
+      num_devices++;
     }
 
+    /// allocate result
+    jobjectArray row = (*env)->NewObjectArray(env, 4, stringClass, 0);
+    jobjectArray ret = (*env)->NewObjectArray(env, num_devices, (*env)->GetObjectClass(env, row), 0);
+    (*env)->DeleteLocalRef(env, row);
+
+    int i = 0;
     for (iter = devices; iter != NULL; iter = iter->next) {
       GstDevice *device = iter->data;
 
+      // allocate result row
+      jobjectArray row = (*env)->NewObjectArray(env, 4, stringClass, 0);
+
       gchar *display_name = gst_device_get_display_name (device);
-      fprintf (stderr, "%s\n", display_name);
+      (*env)->SetObjectArrayElement(env, row, 0, (*env)->NewStringUTF(env, display_name));
       g_free (display_name);
 
       gchar *class = gst_device_get_device_class (device);
-      fprintf (stderr, "\tclass: %s\n", class);
+      (*env)->SetObjectArrayElement(env, row, 1, (*env)->NewStringUTF(env, class));
       g_free (class);
 
       GstCaps *caps = gst_device_get_caps (device);
-      fprintf (stderr, "\tcaps: %s\n", gst_caps_to_string (caps));
+      (*env)->SetObjectArrayElement(env, row, 2, (*env)->NewStringUTF(env, gst_caps_to_string (caps)));
       gst_caps_unref (caps);
 
       GstStructure *props = gst_device_get_properties (device);
       gchar *temp = gst_structure_to_string (props);
-      fprintf (stderr, "\tadditional properties: %s\n", temp);
+      (*env)->SetObjectArrayElement(env, row, 3, (*env)->NewStringUTF(env, temp));
       g_free (temp);
       gst_structure_free (props);
+
+      // add to result
+      (*env)->SetObjectArrayElement(env, ret, i, row);
 
       // additional methods:
       // gst_device_create_element
@@ -426,7 +441,7 @@ JNIEXPORT void JNICALL Java_gohai_glvideo_GLVideo_gstreamer_1getDevices
     gst_device_monitor_stop (monitor);
     gst_object_unref (monitor);
 
-    // XXX: return something sensible
+    return ret;
   }
 
 JNIEXPORT jlong JNICALL Java_gohai_glvideo_GLVideo_gstreamer_1open_1pipeline

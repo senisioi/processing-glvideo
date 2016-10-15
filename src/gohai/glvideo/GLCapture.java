@@ -47,11 +47,16 @@ public class GLCapture extends GLVideo {
     }
   }
 
-  public static void list() {
+  public static String[] list() {
     // make sure the library is loaded
     loadGStreamer();
 
-    gstreamer_getDevices("Video/Source");
-    // XXX: return something sensible
+    String[][] devices = gstreamer_getDevices("Video/Source");
+
+    String[] device_names = new String[devices.length];
+    for (int i=0; i < devices.length; i++) {
+      device_names[i] = devices[i][0];
+    }
+    return device_names;
   }
 }
