@@ -79,6 +79,27 @@ public class GLCapture extends GLVideo {
   }
 
   public GLCapture(PApplet parent, String deviceName) {
+    // XXX: get best config
+    this(parent, deviceName, "");
+  }
+
+  public GLCapture(PApplet parent, String deviceName, float fps) {
+    // XXX: convert float to fraction
+    // XXX: wants width & height from config also?
+    this(parent, deviceName, "framerate=");
+  }
+
+  public GLCapture(PApplet parent, String deviceName, int width, int height) {
+    // XXX: wants framerate from config also?
+    this(parent, deviceName, "width=" + width + ", height=" + height);
+  }
+
+  public GLCapture(PApplet parent, String deviceName, int width, int height, float fps) {
+    // XXX: convert float to fraction
+    this(parent, deviceName, "width=" + width + ", height=" + height + ", framerate=");
+  }
+
+  public GLCapture(PApplet parent, String deviceName, String config) {
     super(parent, 0);
 
     handle = gstreamer_open_device(deviceName, 0);
