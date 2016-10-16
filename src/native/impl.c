@@ -381,17 +381,14 @@ JNIEXPORT jstring JNICALL Java_gohai_glvideo_GLVideo_gstreamer_1filenameToUri
   }
 
 JNIEXPORT jobjectArray JNICALL Java_gohai_glvideo_GLVideo_gstreamer_1getDevices
-  (JNIEnv * env, jclass cls, jstring _filter) {
+  (JNIEnv * env, jclass cls) {
     GList *devices = NULL;
     GList *iter = NULL;
     jclass stringClass = (*env)->FindClass (env, "java/lang/String");
 
     GstDeviceMonitor *monitor = gst_device_monitor_new ();
 
-    const char *filter = (*env)->GetStringUTFChars (env, _filter, JNI_FALSE);
-    gst_device_monitor_add_filter (monitor, filter, NULL);
-    (*env)->ReleaseStringUTFChars (env, _filter, filter);
-
+    gst_device_monitor_add_filter (monitor, "Video/Source", NULL);
     devices = gst_device_monitor_get_devices (monitor);
 
     // count number of results

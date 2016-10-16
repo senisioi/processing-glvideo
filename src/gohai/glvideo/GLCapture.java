@@ -48,7 +48,7 @@ public class GLCapture extends GLVideo {
 
 
     if (devices == null) {
-      devices = gstreamer_getDevices("Video/Source");
+      devices = gstreamer_getDevices();
     }
 
     if (devices.length == 0) {
@@ -91,7 +91,7 @@ public class GLCapture extends GLVideo {
     super(parent, 0);
 
     if (devices == null) {
-      devices = gstreamer_getDevices("Video/Source");
+      devices = gstreamer_getDevices();
     }
 
     for (int i=0; i < devices.length; i++) {
@@ -144,8 +144,7 @@ public class GLCapture extends GLVideo {
     // make sure the library is loaded
     loadGStreamer();
     // re-fetch the devices list, even if we have it already
-    // XXX: hardcode "Video/Source" in C file
-    devices = gstreamer_getDevices("Video/Source");
+    devices = gstreamer_getDevices();
 
     // XXX: is the device name guaranteed to be unique?
     String[] device_names = new String[devices.length];
@@ -158,7 +157,7 @@ public class GLCapture extends GLVideo {
   public static String[] configs(String deviceName) {
     if (devices == null) {
       loadGStreamer();
-      devices = gstreamer_getDevices("Video/Source");
+      devices = gstreamer_getDevices();
     }
 
     for (int i=0; i < devices.length; i++) {
