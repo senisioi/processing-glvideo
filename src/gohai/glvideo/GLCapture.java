@@ -155,8 +155,8 @@ public class GLCapture extends GLVideo {
     }
 
     for (int i=0; i < devices.length; i++) {
-      if (devices[i][0].equals(deviceName)) {
-        if (devices[i][2].equals("")) {
+      if (deviceName.equals(devices[i][0])) {
+        if (devices[i][2] == null || devices[i][2].length() == 0) {
           return new String[0];
         } else {
           ArrayList<Caps> caps = Caps.getAllCapsFiltered(devices[i][2]);
@@ -255,19 +255,23 @@ public class GLCapture extends GLVideo {
 
 
     public static ArrayList<Caps> getAllCaps(String full) {
-      String[] lines = full.split("; ");
       ArrayList<Caps> caps = new ArrayList<Caps>();
-      for (int i=0; i < lines.length; i++) {
-        caps.addAll(getCaps(lines[i]));
+      if (full != null && 0 < full.length()) {
+        String[] lines = full.split("; ");
+        for (int i=0; i < lines.length; i++) {
+          caps.addAll(getCaps(lines[i]));
+        }
       }
       return caps;
     }
 
     public static ArrayList<Caps> getAllCapsFiltered(String full) {
-      String[] lines = full.split("; ");
       ArrayList<Caps> caps = new ArrayList<Caps>();
-      for (int i=0; i < lines.length; i++) {
-        caps.addAll(getCapsFiltered(lines[i]));
+      if (full != null && 0 < full.length()) {
+        String[] lines = full.split("; ");
+        for (int i=0; i < lines.length; i++) {
+          caps.addAll(getCapsFiltered(lines[i]));
+        }
       }
       return caps;
     }
@@ -381,7 +385,7 @@ public class GLCapture extends GLVideo {
       Collections.sort(caps);
 
       // make sure the top choice has a usable framerate
-      if (caps.get(0).fps < 29.96) {
+      if (0 < caps.size() && caps.get(0).fps < 29.96) {
         // look for the highest framerate
         float best_fps = caps.get(0).fps;
         int best_idx = 0;
