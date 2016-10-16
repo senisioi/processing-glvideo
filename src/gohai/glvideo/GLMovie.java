@@ -47,7 +47,7 @@ public class GLMovie extends GLVideo {
       pipeline_extra += " mute=true";
     }
 
-    handle = gstreamer_open_pipeline("playbin uri=" + uri + " video-sink=\"\"" + pipeline_extra, flags);
+    handle = gstreamer_openPipeline("playbin uri=" + uri + " video-sink=\"\"" + pipeline_extra, flags);
     if (handle == 0) {
       throw new RuntimeException("Could not load video");
     }

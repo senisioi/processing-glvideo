@@ -38,7 +38,7 @@ public class GLCapture extends GLVideo {
 
     // XXX: will be removed eventually
     if (PApplet.platform == MACOSX) {
-      handle = gstreamer_open_pipeline("qtkitvideosrc device-index=0", 0);
+      handle = gstreamer_openPipeline("qtkitvideosrc device-index=0", 0);
       if (handle == 0) {
         throw new RuntimeException("Could not open capture device");
       }
@@ -60,7 +60,7 @@ public class GLCapture extends GLVideo {
     String[] configs = Caps.getConfigArraySorted(caps);
     String chosen = Caps.getFirstConfig(configs);
 
-    handle = gstreamer_open_device(devices[0][0], chosen, 0);
+    handle = gstreamer_openDevice(devices[0][0], chosen, 0);
     if (handle == 0) {
       throw new RuntimeException("Could not open capture device " + devices[0][0]);
     } else{
@@ -81,7 +81,7 @@ public class GLCapture extends GLVideo {
       throw new RuntimeException("Currently not supported on Windows");
     }
 
-    handle = gstreamer_open_pipeline(pipeline + index, 0);
+    handle = gstreamer_openPipeline(pipeline + index, 0);
     if (handle == 0) {
       throw new RuntimeException("Could not open capture device");
     }
@@ -101,7 +101,7 @@ public class GLCapture extends GLVideo {
         String[] configs = Caps.getConfigArraySorted(caps);
         String chosen = Caps.getFirstConfig(configs);
 
-        handle = gstreamer_open_device(devices[i][0], chosen, 0);
+        handle = gstreamer_openDevice(devices[i][0], chosen, 0);
         if (handle == 0) {
           throw new RuntimeException("Could not open capture device " + devices[i][0]);
         } else if (handle == 1) {
@@ -132,7 +132,7 @@ public class GLCapture extends GLVideo {
   public GLCapture(PApplet parent, String deviceName, String config) {
     super(parent, 0);
 
-    handle = gstreamer_open_device(deviceName, config, 0);
+    handle = gstreamer_openDevice(deviceName, config, 0);
     if (handle == 0) {
       throw new RuntimeException("Could not open capture device " + deviceName);
     } else {

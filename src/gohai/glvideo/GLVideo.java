@@ -72,7 +72,7 @@ public class GLVideo extends PImage {
   public GLVideo(PApplet parent, String pipeline, int flags) {
     this(parent, flags);
 
-    handle = gstreamer_open_pipeline(pipeline, flags);
+    handle = gstreamer_openPipeline(pipeline, flags);
     if (handle == 0) {
       throw new RuntimeException("Could not open pipeline");
     }
@@ -362,9 +362,8 @@ public class GLVideo extends PImage {
   public static native boolean gstreamer_init();
   public static native String gstreamer_filenameToUri(String fn);
   public static native String[][] gstreamer_getDevices(String filter);
-  // XXX: rename to openPipeline, openDevice
-  public static native long gstreamer_open_pipeline(String pipeline, int flags);
-  public static native long gstreamer_open_device(String deviceName, String caps, int flags);
+  public static native long gstreamer_openPipeline(String pipeline, int flags);
+  public static native long gstreamer_openDevice(String deviceName, String caps, int flags);
   public static native boolean gstreamer_isAvailable(long handle);
   public static native int gstreamer_getFrame(long handle);
   public static native void gstreamer_startPlayback(long handle);

@@ -441,7 +441,7 @@ JNIEXPORT jobjectArray JNICALL Java_gohai_glvideo_GLVideo_gstreamer_1getDevices
     return ret;
   }
 
-JNIEXPORT jlong JNICALL Java_gohai_glvideo_GLVideo_gstreamer_1open_1pipeline
+JNIEXPORT jlong JNICALL Java_gohai_glvideo_GLVideo_gstreamer_1openPipeline
   (JNIEnv * env, jclass cls, jstring _pipeline, jint flags) {
     GLVIDEO_STATE_T *state = malloc (sizeof (GLVIDEO_STATE_T));
     if (!state) {
@@ -514,7 +514,7 @@ JNIEXPORT jlong JNICALL Java_gohai_glvideo_GLVideo_gstreamer_1open_1pipeline
     return (intptr_t) state;
   }
 
-JNIEXPORT jlong JNICALL Java_gohai_glvideo_GLVideo_gstreamer_1open_1device
+JNIEXPORT jlong JNICALL Java_gohai_glvideo_GLVideo_gstreamer_1openDevice
   (JNIEnv * env, jclass cls, jstring _deviceName, jstring _caps, jint flags) {
     GList *iter = NULL;
     // XXX: or reuse the same monitor?

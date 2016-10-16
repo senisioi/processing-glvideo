@@ -45,18 +45,18 @@ JNIEXPORT jobjectArray JNICALL Java_gohai_glvideo_GLVideo_gstreamer_1getDevices
 
 /*
  * Class:     gohai_glvideo_GLVideo
- * Method:    gstreamer_open_pipeline
+ * Method:    gstreamer_openPipeline
  * Signature: (Ljava/lang/String;I)J
  */
-JNIEXPORT jlong JNICALL Java_gohai_glvideo_GLVideo_gstreamer_1open_1pipeline
+JNIEXPORT jlong JNICALL Java_gohai_glvideo_GLVideo_gstreamer_1openPipeline
   (JNIEnv *, jclass, jstring, jint);
 
 /*
  * Class:     gohai_glvideo_GLVideo
- * Method:    gstreamer_open_device
+ * Method:    gstreamer_openDevice
  * Signature: (Ljava/lang/String;Ljava/lang/String;I)J
  */
-JNIEXPORT jlong JNICALL Java_gohai_glvideo_GLVideo_gstreamer_1open_1device
+JNIEXPORT jlong JNICALL Java_gohai_glvideo_GLVideo_gstreamer_1openDevice
   (JNIEnv *, jclass, jstring, jstring, jint);
 
 /*
