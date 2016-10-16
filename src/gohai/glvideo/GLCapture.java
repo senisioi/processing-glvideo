@@ -95,6 +95,7 @@ public class GLCapture extends GLVideo {
     // re-fetch the devices list, even if we have it already
     devices = gstreamer_getDevices("Video/Source");
 
+    // XXX: is the device name guaranteed to be unique?
     String[] device_names = new String[devices.length];
     for (int i=0; i < devices.length; i++) {
       device_names[i] = devices[i][0];
