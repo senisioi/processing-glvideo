@@ -148,7 +148,8 @@ events_cb (GstPad * pad, GstPadProbeInfo * probe_info, gpointer user_data)
       if (state->caps) {
         // DEBUG
         gchar * temp = gst_caps_to_string (state->caps);
-        fprintf (stderr, "Final caps: %s\n", temp);
+        fprintf (stdout, "Final caps: %s\n", temp);
+        fflush (stdout);
         g_free (temp);
         gst_caps_ref (state->caps);
       }
