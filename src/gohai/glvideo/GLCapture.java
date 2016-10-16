@@ -145,6 +145,8 @@ public class GLCapture extends GLVideo {
       Caps cap = new Caps();
       caps.add(cap);
 
+      cap.full_caps = s;
+
       // mime type
       cap.mime = s.substring(0, s.indexOf(", "));
 
