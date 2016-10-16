@@ -36,17 +36,6 @@ public class GLCapture extends GLVideo {
   public GLCapture(PApplet parent) {
     super(parent, 0);
 
-    // XXX: will be removed eventually
-    if (PApplet.platform == MACOSX) {
-      handle = gstreamer_openPipeline("qtkitvideosrc device-index=0", 0);
-      if (handle == 0) {
-        throw new RuntimeException("Could not open capture device");
-      }
-    } else if (PApplet.platform == WINDOWS) {
-      throw new RuntimeException("Currently not supported on Windows");
-    }
-
-
     if (devices == null) {
       devices = gstreamer_getDevices();
     }
@@ -63,25 +52,6 @@ public class GLCapture extends GLVideo {
     handle = gstreamer_openDevice(devices[0][0], chosen, 0);
     if (handle == 0) {
       throw new RuntimeException("Could not open capture device " + devices[0][0]);
-    }
-  }
-
-  public GLCapture(PApplet parent, int index) {
-    // XXX: will be removed eventually
-    super(parent, 0);
-    String pipeline;
-
-    if (PApplet.platform == LINUX) {
-      pipeline = "v4l2src device=/dev/video";
-    } else if (PApplet.platform == MACOSX) {
-      pipeline = "qtkitvideosrc device-index=";
-    } else {
-      throw new RuntimeException("Currently not supported on Windows");
-    }
-
-    handle = gstreamer_openPipeline(pipeline + index, 0);
-    if (handle == 0) {
-      throw new RuntimeException("Could not open capture device");
     }
   }
 
