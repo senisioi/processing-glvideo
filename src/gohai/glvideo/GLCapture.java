@@ -191,12 +191,12 @@ public class GLCapture extends GLVideo {
     String formatted = Float.toString(fps);
     // this presumes the delimitter is always a dot
     int i = formatted.indexOf('.');
-    if (i != -1) {
+    if (Math.floor(fps) != fps) {
       int denom = (int)Math.pow(10, formatted.length()-i-1);
       int num = (int)(fps * denom);
       return num + "/" + denom;
     } else {
-      return formatted + "/1";
+      return (int)fps + "/1";
     }
   }
 
