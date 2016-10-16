@@ -24,6 +24,7 @@ package gohai.glvideo;
 
 import processing.core.*;
 import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  *  @webref
@@ -112,7 +113,8 @@ public class GLCapture extends GLVideo {
         if (devices[i][2].equals("")) {
           return new String[0];
         } else {
-          return devices[i][2].split("; ");
+          ArrayList<Caps> caps = Caps.getAllCapsFiltered(devices[i][2]);
+          return Caps.getConfigArraySorted(caps);
         }
       }
     }
@@ -120,8 +122,16 @@ public class GLCapture extends GLVideo {
     return null;
   }
 
+  public static String[] configsTest() {
+    // XXX: will be removed
+    // data from Macbook Air running Linux
+    String all = "video/x-raw, format=(string)YUY2, width=(int)1280, height=(int)720, pixel-aspect-ratio=(fraction)1/1, interlace-mode=(string)progressive, colorimetry=(string)2:4:7:1, framerate=(fraction)10/1; video/x-raw, format=(string)YUY2, width=(int)640, height=(int)480, pixel-aspect-ratio=(fraction)1/1, interlace-mode=(string)progressive, colorimetry=(string)2:4:7:1, framerate=(fraction){ 2997/100, 25/1, 24/1, 15/1 }; video/x-raw, format=(string)YUY2, width=(int)480, height=(int)360, pixel-aspect-ratio=(fraction)1/1, interlace-mode=(string)progressive, colorimetry=(string)2:4:7:1, framerate=(fraction){ 2997/100, 25/1, 24/1, 15/1 }; video/x-raw, format=(string)YUY2, width=(int)352, height=(int)288, pixel-aspect-ratio=(fraction)1/1, interlace-mode=(string)progressive, colorimetry=(string)2:4:7:1, framerate=(fraction){ 2997/100, 25/1, 24/1, 15/1 }; video/x-raw, format=(string)YUY2, width=(int)320, height=(int)240, pixel-aspect-ratio=(fraction)1/1, interlace-mode=(string)progressive, colorimetry=(string)2:4:7:1, framerate=(fraction){ 2997/100, 25/1, 24/1, 15/1 }; video/x-raw, format=(string)YUY2, width=(int)176, height=(int)144, pixel-aspect-ratio=(fraction)1/1, interlace-mode=(string)progressive, colorimetry=(string)2:4:7:1, framerate=(fraction){ 2997/100, 25/1, 24/1, 15/1 }; video/x-raw, format=(string)YUY2, width=(int)160, height=(int)120, pixel-aspect-ratio=(fraction)1/1, interlace-mode=(string)progressive, colorimetry=(string)2:4:7:1, framerate=(fraction){ 2997/100, 25/1, 24/1, 15/1 }; image/jpeg, width=(int)1280, height=(int)720, pixel-aspect-ratio=(fraction)1/1, colorimetry=(string)2:4:7:1, framerate=(fraction){ 2997/100, 25/1, 24/1, 15/1 }; image/jpeg, width=(int)1024, height=(int)576, pixel-aspect-ratio=(fraction)1/1, colorimetry=(string)2:4:7:1, framerate=(fraction){ 2997/100, 25/1, 24/1, 15/1 }; image/jpeg, width=(int)960, height=(int)544, pixel-aspect-ratio=(fraction)1/1, colorimetry=(string)2:4:7:1, framerate=(fraction){ 2997/100, 25/1, 24/1, 15/1 }; video/x-raw, format=(string)I420, width=(int)1280, height=(int)720, pixel-aspect-ratio=(fraction)1/1, interlace-mode=(string)progressive, framerate=(fraction){ 2997/100, 25/1, 24/1, 15/1 }; video/x-raw, format=(string)I420, width=(int)1024, height=(int)576, pixel-aspect-ratio=(fraction)1/1, interlace-mode=(string)progressive, framerate=(fraction){ 2997/100, 25/1, 24/1, 15/1 }; video/x-raw, format=(string)I420, width=(int)960, height=(int)544, pixel-aspect-ratio=(fraction)1/1, interlace-mode=(string)progressive, framerate=(fraction){ 2997/100, 25/1, 24/1, 15/1 }; video/x-raw, format=(string)I420, width=(int)640, height=(int)480, pixel-aspect-ratio=(fraction)1/1, interlace-mode=(string)progressive, framerate=(fraction){ 2997/100, 25/1, 24/1, 15/1 }; video/x-raw, format=(string)I420, width=(int)480, height=(int)360, pixel-aspect-ratio=(fraction)1/1, interlace-mode=(string)progressive, framerate=(fraction){ 2997/100, 25/1, 24/1, 15/1 }; video/x-raw, format=(string)I420, width=(int)352, height=(int)288, pixel-aspect-ratio=(fraction)1/1, interlace-mode=(string)progressive, framerate=(fraction){ 2997/100, 25/1, 24/1, 15/1 }; video/x-raw, format=(string)I420, width=(int)320, height=(int)240, pixel-aspect-ratio=(fraction)1/1, interlace-mode=(string)progressive, framerate=(fraction){ 2997/100, 25/1, 24/1, 15/1 }; video/x-raw, format=(string)I420, width=(int)176, height=(int)144, pixel-aspect-ratio=(fraction)1/1, interlace-mode=(string)progressive, framerate=(fraction){ 2997/100, 25/1, 24/1, 15/1 }; video/x-raw, format=(string)I420, width=(int)160, height=(int)120, pixel-aspect-ratio=(fraction)1/1, interlace-mode=(string)progressive, framerate=(fraction){ 2997/100, 25/1, 24/1, 15/1 }; video/x-raw, format=(string)YV12, width=(int)1280, height=(int)720, pixel-aspect-ratio=(fraction)1/1, interlace-mode=(string)progressive, framerate=(fraction){ 2997/100, 25/1, 24/1, 15/1 }; video/x-raw, format=(string)YV12, width=(int)1024, height=(int)576, pixel-aspect-ratio=(fraction)1/1, interlace-mode=(string)progressive, framerate=(fraction){ 2997/100, 25/1, 24/1, 15/1 }; video/x-raw, format=(string)YV12, width=(int)960, height=(int)544, pixel-aspect-ratio=(fraction)1/1, interlace-mode=(string)progressive, framerate=(fraction){ 2997/100, 25/1, 24/1, 15/1 }; video/x-raw, format=(string)YV12, width=(int)640, height=(int)480, pixel-aspect-ratio=(fraction)1/1, interlace-mode=(string)progressive, framerate=(fraction){ 2997/100, 25/1, 24/1, 15/1 }; video/x-raw, format=(string)YV12, width=(int)480, height=(int)360, pixel-aspect-ratio=(fraction)1/1, interlace-mode=(string)progressive, framerate=(fraction){ 2997/100, 25/1, 24/1, 15/1 }; video/x-raw, format=(string)YV12, width=(int)352, height=(int)288, pixel-aspect-ratio=(fraction)1/1, interlace-mode=(string)progressive, framerate=(fraction){ 2997/100, 25/1, 24/1, 15/1 }; video/x-raw, format=(string)YV12, width=(int)320, height=(int)240, pixel-aspect-ratio=(fraction)1/1, interlace-mode=(string)progressive, framerate=(fraction){ 2997/100, 25/1, 24/1, 15/1 }; video/x-raw, format=(string)YV12, width=(int)176, height=(int)144, pixel-aspect-ratio=(fraction)1/1, interlace-mode=(string)progressive, framerate=(fraction){ 2997/100, 25/1, 24/1, 15/1 }; video/x-raw, format=(string)YV12, width=(int)160, height=(int)120, pixel-aspect-ratio=(fraction)1/1, interlace-mode=(string)progressive, framerate=(fraction){ 2997/100, 25/1, 24/1, 15/1 }; video/x-raw, format=(string)BGR, width=(int)1280, height=(int)720, pixel-aspect-ratio=(fraction)1/1, interlace-mode=(string)progressive, framerate=(fraction){ 2997/100, 25/1, 24/1, 15/1 }; video/x-raw, format=(string)BGR, width=(int)1024, height=(int)576, pixel-aspect-ratio=(fraction)1/1, interlace-mode=(string)progressive, framerate=(fraction){ 2997/100, 25/1, 24/1, 15/1 }; video/x-raw, format=(string)BGR, width=(int)960, height=(int)544, pixel-aspect-ratio=(fraction)1/1, interlace-mode=(string)progressive, framerate=(fraction){ 2997/100, 25/1, 24/1, 15/1 }; video/x-raw, format=(string)BGR, width=(int)640, height=(int)480, pixel-aspect-ratio=(fraction)1/1, interlace-mode=(string)progressive, framerate=(fraction){ 2997/100, 25/1, 24/1, 15/1 }; video/x-raw, format=(string)BGR, width=(int)480, height=(int)360, pixel-aspect-ratio=(fraction)1/1, interlace-mode=(string)progressive, framerate=(fraction){ 2997/100, 25/1, 24/1, 15/1 }; video/x-raw, format=(string)BGR, width=(int)352, height=(int)288, pixel-aspect-ratio=(fraction)1/1, interlace-mode=(string)progressive, framerate=(fraction){ 2997/100, 25/1, 24/1, 15/1 }; video/x-raw, format=(string)BGR, width=(int)320, height=(int)240, pixel-aspect-ratio=(fraction)1/1, interlace-mode=(string)progressive, framerate=(fraction){ 2997/100, 25/1, 24/1, 15/1 }; video/x-raw, format=(string)BGR, width=(int)176, height=(int)144, pixel-aspect-ratio=(fraction)1/1, interlace-mode=(string)progressive, framerate=(fraction){ 2997/100, 25/1, 24/1, 15/1 }; video/x-raw, format=(string)BGR, width=(int)160, height=(int)120, pixel-aspect-ratio=(fraction)1/1, interlace-mode=(string)progressive, framerate=(fraction){ 2997/100, 25/1, 24/1, 15/1 }; video/x-raw, format=(string)RGB, width=(int)1280, height=(int)720, pixel-aspect-ratio=(fraction)1/1, interlace-mode=(string)progressive, framerate=(fraction){ 2997/100, 25/1, 24/1, 15/1 }; video/x-raw, format=(string)RGB, width=(int)1024, height=(int)576, pixel-aspect-ratio=(fraction)1/1, interlace-mode=(string)progressive, framerate=(fraction){ 2997/100, 25/1, 24/1, 15/1 }; video/x-raw, format=(string)RGB, width=(int)960, height=(int)544, pixel-aspect-ratio=(fraction)1/1, interlace-mode=(string)progressive, framerate=(fraction){ 2997/100, 25/1, 24/1, 15/1 }; video/x-raw, format=(string)RGB, width=(int)640, height=(int)480, pixel-aspect-ratio=(fraction)1/1, interlace-mode=(string)progressive, framerate=(fraction){ 2997/100, 25/1, 24/1, 15/1 }; video/x-raw, format=(string)RGB, width=(int)480, height=(int)360, pixel-aspect-ratio=(fraction)1/1, interlace-mode=(string)progressive, framerate=(fraction){ 2997/100, 25/1, 24/1, 15/1 }; video/x-raw, format=(string)RGB, width=(int)352, height=(int)288, pixel-aspect-ratio=(fraction)1/1, interlace-mode=(string)progressive, framerate=(fraction){ 2997/100, 25/1, 24/1, 15/1 }; video/x-raw, format=(string)RGB, width=(int)320, height=(int)240, pixel-aspect-ratio=(fraction)1/1, interlace-mode=(string)progressive, framerate=(fraction){ 2997/100, 25/1, 24/1, 15/1 }; video/x-raw, format=(string)RGB, width=(int)176, height=(int)144, pixel-aspect-ratio=(fraction)1/1, interlace-mode=(string)progressive, framerate=(fraction){ 2997/100, 25/1, 24/1, 15/1 }; video/x-raw, format=(string)RGB, width=(int)160, height=(int)120, pixel-aspect-ratio=(fraction)1/1, interlace-mode=(string)progressive, framerate=(fraction){ 2997/100, 25/1, 24/1, 15/1 }";
+    ArrayList<Caps> caps = Caps.getAllCapsFiltered(all);
+    return Caps.getConfigArraySorted(caps);
+  }
 
-  static class Caps implements Cloneable {
+
+  static class Caps implements Cloneable, Comparable {
 
     String full_caps;
     String mime;
@@ -129,85 +139,129 @@ public class GLCapture extends GLVideo {
     int width;
     int height;
     String interlace_mode;
+    String framerate;        // fraction
     float fps;
 
     public Object clone() throws CloneNotSupportedException {
       return super.clone();
     }
 
+    public int compareTo(Object obj) {
+      Caps otherCap = (Caps)obj;
+
+      if ("video/x-raw".equals(mime) && !"video/x-raw".equals(otherCap.mime)) {
+        return -1;
+      }
+      if ("progressive".equals(interlace_mode) && !"progressive".equals(otherCap.interlace_mode)) {
+        return -1;
+      }
+      if (otherCap.height < height) {
+        return -1;
+      } else if (height < otherCap.height) {
+        return 1;
+      }
+      if (otherCap.fps < fps) {
+        return -1;
+      } else if (fps < otherCap.fps) {
+        return 1;
+      }
+      if ("RGB".equals(format) && !"RGB".equals(format)) {
+        return -1;
+      }
+      return 0;
+    }
+
     public String toString() {
-      return width + "x" + height + "@" + fps;
+      return "width=" + width + ", height=" + height + ", framerate=" + framerate;
     }
 
 
-    public static ArrayList<Caps> getCaps(String s) {
+    public static ArrayList<Caps> getAllCaps(String full) {
+      String[] lines = full.split("; ");
+      ArrayList<Caps> caps = new ArrayList<Caps>();
+      for (int i=0; i < lines.length; i++) {
+        caps.addAll(getCaps(lines[i]));
+      }
+      return caps;
+    }
+
+    public static ArrayList<Caps> getAllCapsFiltered(String full) {
+      String[] lines = full.split("; ");
+      ArrayList<Caps> caps = new ArrayList<Caps>();
+      for (int i=0; i < lines.length; i++) {
+        caps.addAll(getCapsFiltered(lines[i]));
+      }
+      return caps;
+    }
+
+    public static ArrayList<Caps> getCaps(String single) {
       ArrayList<Caps> caps = new ArrayList<Caps>();
       Caps cap = new Caps();
       caps.add(cap);
 
-      cap.full_caps = s;
+      cap.full_caps = single;
 
       // mime type
-      cap.mime = s.substring(0, s.indexOf(", "));
+      cap.mime = single.substring(0, single.indexOf(", "));
 
-      int i = s.indexOf("format=(string)");
+      int i = single.indexOf("format=(string)");
       if (i != -1) {
-        int j = s.indexOf(", ", i);
+        int j = single.indexOf(", ", i);
         if (j != -1) {
-          cap.format = s.substring(i+15, j);
+          cap.format = single.substring(i+15, j);
         } else {
-          cap.format = s.substring(i+15);
+          cap.format = single.substring(i+15);
         }
       }
 
-      i = s.indexOf("width=(int)");
+      i = single.indexOf("width=(int)");
       if (i != -1) {
-        int j = s.indexOf(", ", i);
+        int j = single.indexOf(", ", i);
         if (j != -1) {
-          cap.width = Integer.parseInt(s.substring(i+11, j));
+          cap.width = Integer.parseInt(single.substring(i+11, j));
         } else {
-          cap.width = Integer.parseInt(s.substring(i+11));
+          cap.width = Integer.parseInt(single.substring(i+11));
         }
       }
 
-      i = s.indexOf("height=(int)");
+      i = single.indexOf("height=(int)");
       if (i != -1) {
-        int j = s.indexOf(", ", i);
+        int j = single.indexOf(", ", i);
         if (j != -1) {
-          cap.height = Integer.parseInt(s.substring(i+12, j));
+          cap.height = Integer.parseInt(single.substring(i+12, j));
         } else {
-          cap.height = Integer.parseInt(s.substring(i+12));
+          cap.height = Integer.parseInt(single.substring(i+12));
         }
       }
 
-      i = s.indexOf("interlace-mode=(string)");
+      i = single.indexOf("interlace-mode=(string)");
       if (i != -1) {
-        int j = s.indexOf(", ", i);
+        int j = single.indexOf(", ", i);
         if (j != -1) {
-          cap.interlace_mode = s.substring(i+23, j);
+          cap.interlace_mode = single.substring(i+23, j);
         } else {
-          cap.interlace_mode = s.substring(i+23);
+          cap.interlace_mode = single.substring(i+23);
         }
       }
 
-      i = s.indexOf("framerate=(fraction)");
+      i = single.indexOf("framerate=(fraction)");
       if (i != -1) {
         String[] temp = null;
-        if (s.charAt(i+20) == '{') {
+        if (single.charAt(i+20) == '{') {
           // handle array of values
-          int j = s.indexOf("}, ", i);
+          int j = single.indexOf("}, ", i);
           if (j != -1) {
-            temp = s.substring(i+22, j-1).split(", ");
+            temp = single.substring(i+22, j-1).split(", ");
           } else {
-            temp = s.substring(i+22, s.length()-2).split(", ");
+            temp = single.substring(i+22, single.length()-2).split(", ");
           }
         } else {
-          int j = s.indexOf(", ", i);
+          int j = single.indexOf(", ", i);
           temp = new String[1];
           if (j != -1) {
-            temp[0] = s.substring(i+20, j);
+            temp[0] = single.substring(i+20, j);
           } else {
-            temp[0] = s.substring(i+20);
+            temp[0] = single.substring(i+20);
           }
         }
 
@@ -221,6 +275,7 @@ public class GLCapture extends GLVideo {
             caps.add(cap);
           }
 
+          cap.framerate = temp[i];
           // also convert fraction to float
           int j = temp[i].indexOf('/');
           if (j != -1) {
@@ -232,6 +287,73 @@ public class GLCapture extends GLVideo {
       }
 
       return caps;
+    }
+
+    public static ArrayList<Caps> getCapsFiltered(String single) {
+      ArrayList<Caps> caps = getCaps(single);
+
+      for (int i=0; i < caps.size(); i++) {
+        // remove motion JPEG configs and the like
+        if (!"video/x-raw".equals(caps.get(i).mime)) {
+          caps.remove(i);
+          i--;
+        }
+        // XXX: more?
+      }
+
+      return caps;
+    }
+
+    public static String[] getConfigArraySorted(ArrayList<Caps> caps) {
+      Collections.sort(caps);
+
+      // make sure the top choice has a usable framerate
+      if (caps.get(0).fps < 29.96) {
+        System.out.println(caps.get(0).fps);
+        // look for the highest framerate
+        float best_fps = caps.get(0).fps;
+        int best_idx = 0;
+        for (int i=0; i < caps.size(); i++) {
+          if (best_fps < caps.get(i).fps) {
+            best_fps = caps.get(i).fps;
+            best_idx = i;
+          }
+          // XXX: test
+          if (29.97 <= best_fps) {
+            // good enough, no need to go for a lower resolution
+            break;
+          }
+        }
+        if (best_idx != 0) {
+          // DEBUG
+          System.out.println("Promoting " + caps.get(best_idx) + " over " + caps.get(0));
+          Caps best = caps.remove(best_idx);
+          caps.add(0, best);
+        }
+      }
+
+      // make stringified output unique
+      for (int i=1; i < caps.size(); i++) {
+        String needle = caps.get(i).toString();
+        boolean found = false;
+        for (int j=0; j < i; j++) {
+          if (needle.equals(caps.get(j).toString())) {
+            found = true;
+            break;
+          }
+        }
+        if (found) {
+          caps.remove(i);
+          i--;
+        }
+      }
+
+      // convert to string array
+      String[] ret = new String[caps.size()];
+      for (int i=0; i < caps.size(); i++) {
+        ret[i] = caps.get(i).toString();
+      }
+      return ret;
     }
   }
 }

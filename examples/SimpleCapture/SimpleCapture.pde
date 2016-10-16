@@ -15,6 +15,19 @@ GLCapture video;
 
 void setup() {
   size(320, 240, P2D);
+
+  if (PApplet.platform == PConstants.LINUX) {
+    String[] devices = GLCapture.list();
+    printArray(devices);
+    if (0 < devices.length) {
+      String[] configs = GLCapture.configs(devices[0]);
+      printArray(configs);
+    }
+  } else {
+    String[] configs = GLCapture.configsTest();
+    printArray(configs);
+  }
+
   // this will use the first recognized camera
   video = new GLCapture(this);
   video.play();
