@@ -317,13 +317,17 @@ init_device_player (GLVIDEO_STATE_T * state, GstElement * src, const char * caps
 {
   state->pipeline = gst_pipeline_new (NULL);
 
+  GstElement *caps_src = gst_element_factory_make ("capsfilter", NULL);
   GstElement *glup = gst_element_factory_make ("glupload", "glup");
   GstElement *glcolorconv = gst_element_factory_make ("glcolorconvert", NULL);
   GstElement *capsfilter = gst_element_factory_make ("capsfilter", "filter");
   GstElement *vsink = gst_element_factory_make ("fakesink", "vsink");
 
-  gst_bin_add_many (GST_BIN (state->pipeline), src, glup, glcolorconv, capsfilter, vsink, NULL);
-  gst_element_link_many (src, glup, glcolorconv, capsfilter, vsink, NULL);
+  gst_bin_add_many (GST_BIN (state->pipeline), src, caps_src, glup, glcolorconv, capsfilter, vsink, NULL);
+  gst_element_link_many (src, caps_src, glup, glcolorconv, capsfilter, vsink, NULL);
+
+  g_object_set (caps_src, "caps",
+      gst_caps_from_string (caps), NULL);
 
   // the following is the same as in init_pipeline_player
 
