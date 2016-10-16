@@ -386,7 +386,6 @@ public class GLCapture extends GLVideo {
 
       // make sure the top choice has a usable framerate
       if (caps.get(0).fps < 29.96) {
-        System.out.println(caps.get(0).fps);
         // look for the highest framerate
         float best_fps = caps.get(0).fps;
         int best_idx = 0;
