@@ -145,8 +145,13 @@ events_cb (GstPad * pad, GstPadProbeInfo * probe_info, gpointer user_data)
         state->caps = NULL;
       }
       gst_event_parse_caps (event, &state->caps);
-      if (state->caps)
+      if (state->caps) {
+        // DEBUG
+        gchar * temp = gst_caps_to_string (state->caps);
+        fprintf (stderr, "Final caps: %s\n", temp);
+        g_free (temp);
         gst_caps_ref (state->caps);
+      }
       break;
     }
     // this is handled in eos_cb
