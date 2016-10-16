@@ -237,11 +237,17 @@ public class GLCapture extends GLVideo {
       } else if (height < otherCap.height) {
         return 1;
       }
+      if (otherCap.width < width) {
+        return -1;
+      } else if (width < otherCap.width) {
+        return 1;
+      }
       if (otherCap.fps < fps) {
         return -1;
       } else if (fps < otherCap.fps) {
         return 1;
       }
+      // XXX: add RGBA?
       if ("RGB".equals(format) && !"RGB".equals(format)) {
         return -1;
       }
