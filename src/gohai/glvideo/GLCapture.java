@@ -165,7 +165,7 @@ public class GLCapture extends GLVideo {
       }
     }
 
-    return null;
+    throw new RuntimeException("Cannot find capture device " + deviceName);
   }
 
   public static String[] configsTest() {
