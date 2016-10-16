@@ -16,20 +16,23 @@ GLCapture video;
 void setup() {
   size(320, 240, P2D);
 
-  if (PApplet.platform == PConstants.LINUX) {
-    String[] devices = GLCapture.list();
-    printArray(devices);
-    if (0 < devices.length) {
-      String[] configs = GLCapture.configs(devices[0]);
-      printArray(configs);
-    }
-  } else {
-    String[] configs = GLCapture.configsTest();
+  String[] devices = GLCapture.list();
+  println("Devices:");
+  printArray(devices);
+  if (0 < devices.length) {
+    String[] configs = GLCapture.configs(devices[0]);
+    println("Configs:");
     printArray(configs);
   }
 
-  // this will use the first recognized camera
+  // this will use the first recognized camera by default
   video = new GLCapture(this);
+
+  // you could be more specific also, e.g.
+  //video = new GLCapture(this, devices[0]);
+  //video = new GLCapture(this, devices[0], 640, 480, 25);
+  //video = new GLCapture(this, devices[0], configs[0]);
+
   video.play();
 }
 
