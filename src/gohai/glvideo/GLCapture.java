@@ -395,8 +395,7 @@ public class GLCapture extends GLVideo {
             best_fps = caps.get(i).fps;
             best_idx = i;
           }
-          // XXX: test
-          if (29.97 <= best_fps) {
+          if (29.96 < best_fps) {
             // good enough, no need to go for a lower resolution
             break;
           }
