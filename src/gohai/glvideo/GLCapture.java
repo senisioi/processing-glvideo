@@ -63,8 +63,6 @@ public class GLCapture extends GLVideo {
     handle = gstreamer_openDevice(devices[0][0], chosen, 0);
     if (handle == 0) {
       throw new RuntimeException("Could not open capture device " + devices[0][0]);
-    } else{
-      throw new RuntimeException("Pipeline bringup not implemented yet");
     }
   }
 
@@ -104,8 +102,6 @@ public class GLCapture extends GLVideo {
         handle = gstreamer_openDevice(devices[i][0], chosen, 0);
         if (handle == 0) {
           throw new RuntimeException("Could not open capture device " + devices[i][0]);
-        } else if (handle == 1) {
-          throw new RuntimeException("Pipeline bringup not implemented yet");
         }
 
         return;
@@ -135,8 +131,6 @@ public class GLCapture extends GLVideo {
     handle = gstreamer_openDevice(deviceName, config, 0);
     if (handle == 0) {
       throw new RuntimeException("Could not open capture device " + deviceName);
-    } else {
-      throw new RuntimeException("Pipeline bringup not implemented yet");
     }
   }
 
