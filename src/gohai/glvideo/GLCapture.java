@@ -437,7 +437,7 @@ public class GLCapture extends GLVideo {
       } else {
         // when we have no suitable configs it might still be better to pass an
         // empty capsfilter string to GStreamer and hope it will figure things out
-        return "";
+        return "video/x-raw";
       }
     }
   }
