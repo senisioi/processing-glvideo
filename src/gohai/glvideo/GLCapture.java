@@ -23,6 +23,7 @@
 package gohai.glvideo;
 
 import processing.core.*;
+import java.util.ArrayList;
 
 /**
  *  @webref
@@ -117,5 +118,118 @@ public class GLCapture extends GLVideo {
     }
 
     return null;
+  }
+
+
+  static class Caps implements Cloneable {
+
+    String full_caps;
+    String mime;
+    String format;
+    int width;
+    int height;
+    String interlace_mode;
+    float fps;
+
+    public Object clone() throws CloneNotSupportedException {
+      return super.clone();
+    }
+
+    public String toString() {
+      return width + "x" + height + "@" + fps;
+    }
+
+
+    public static ArrayList<Caps> getCaps(String s) {
+      ArrayList<Caps> caps = new ArrayList<Caps>();
+      Caps cap = new Caps();
+      caps.add(cap);
+
+      // mime type
+      cap.mime = s.substring(0, s.indexOf(", "));
+
+      int i = s.indexOf("format=(string)");
+      if (i != -1) {
+        int j = s.indexOf(", ", i);
+        if (j != -1) {
+          cap.format = s.substring(i+15, j);
+        } else {
+          cap.format = s.substring(i+15);
+        }
+      }
+
+      i = s.indexOf("width=(int)");
+      if (i != -1) {
+        int j = s.indexOf(", ", i);
+        if (j != -1) {
+          cap.width = Integer.parseInt(s.substring(i+11, j));
+        } else {
+          cap.width = Integer.parseInt(s.substring(i+11));
+        }
+      }
+
+      i = s.indexOf("height=(int)");
+      if (i != -1) {
+        int j = s.indexOf(", ", i);
+        if (j != -1) {
+          cap.height = Integer.parseInt(s.substring(i+12, j));
+        } else {
+          cap.height = Integer.parseInt(s.substring(i+12));
+        }
+      }
+
+      i = s.indexOf("interlace-mode=(string)");
+      if (i != -1) {
+        int j = s.indexOf(", ", i);
+        if (j != -1) {
+          cap.interlace_mode = s.substring(i+23, j);
+        } else {
+          cap.interlace_mode = s.substring(i+23);
+        }
+      }
+
+      i = s.indexOf("framerate=(fraction)");
+      if (i != -1) {
+        String[] temp = null;
+        if (s.charAt(i+20) == '{') {
+          // handle array of values
+          int j = s.indexOf("}, ", i);
+          if (j != -1) {
+            temp = s.substring(i+22, j-1).split(", ");
+          } else {
+            temp = s.substring(i+22, s.length()-2).split(", ");
+          }
+        } else {
+          int j = s.indexOf(", ", i);
+          temp = new String[1];
+          if (j != -1) {
+            temp[0] = s.substring(i+20, j);
+          } else {
+            temp[0] = s.substring(i+20);
+          }
+        }
+
+        for (i=0; i < temp.length; i++) {
+          // create a new Caps instance for each framerate
+          if (0 < i) {
+            try {
+              cap = (Caps)cap.clone();
+            } catch (CloneNotSupportedException e) {
+            }
+            caps.add(cap);
+          }
+
+          // also convert fraction to float
+          int j = temp[i].indexOf('/');
+          if (j != -1) {
+            float num = Float.parseFloat(temp[i].substring(0, j));
+            float denom = Float.parseFloat(temp[i].substring(j+1));
+            cap.fps = num / denom;
+          }
+        }
+      }
+
+      return caps;
+    }
   }
 }
