@@ -114,6 +114,7 @@ public class GLCapture extends GLVideo {
     // make sure the library is loaded
     loadGStreamer();
     // re-fetch the devices list, even if we have it already
+    // XXX: hardcode "Video/Source" in C file
     devices = gstreamer_getDevices("Video/Source");
 
     // XXX: is the device name guaranteed to be unique?
