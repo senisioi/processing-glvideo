@@ -438,8 +438,7 @@ JNIEXPORT jobjectArray JNICALL Java_gohai_glvideo_GLVideo_gstreamer_1getDevices
     return ret;
   }
 
-JNIEXPORT jlong JNICALL Java_gohai_glvideo_GLVideo_gstreamer_1openPipeline
-  (JNIEnv * env, jclass cls, jstring _pipeline, jint flags) {
+GLVIDEO_STATE_T* createGlPipeline(const char * pipeline, GstElement * src, const char * caps, int flags) {
     GLVIDEO_STATE_T *state = malloc (sizeof (GLVIDEO_STATE_T));
     if (!state) {
       return 0L;
@@ -481,14 +480,15 @@ JNIEXPORT jlong JNICALL Java_gohai_glvideo_GLVideo_gstreamer_1openPipeline
     // setup mutex to protect double buffering scheme
     g_mutex_init (&state->buffer_lock);
 
-    // instantiate pipeline
-    const char *pipeline = (*env)->GetStringUTFChars (env, _pipeline, JNI_FALSE);
-    if (!init_pipeline_player (state, pipeline)) {
-      (*env)->ReleaseStringUTFChars (env, _pipeline, pipeline);
-      free (state);
-      return 0L;
+    if (pipeline) {
+      // instantiate pipeline
+      if (!init_pipeline_player (state, pipeline)) {
+        free (state);
+        return NULL;
+      }
+    } else if (src) {
+      // XXX: continue
     }
-    (*env)->ReleaseStringUTFChars (env, _pipeline, pipeline);
 
     // connect the bus handlers
     GstBus *bus = gst_element_get_bus (state->pipeline);
@@ -508,42 +508,66 @@ JNIEXPORT jlong JNICALL Java_gohai_glvideo_GLVideo_gstreamer_1openPipeline
     // start paused
     gst_element_set_state (state->pipeline, GST_STATE_PAUSED);
 
+    return state;
+}
+
+JNIEXPORT jlong JNICALL Java_gohai_glvideo_GLVideo_gstreamer_1openPipeline
+  (JNIEnv * env, jclass cls, jstring _pipeline, jint flags) {
+    GLVIDEO_STATE_T *state;
+    const char *pipeline = (*env)->GetStringUTFChars (env, _pipeline, JNI_FALSE);
+
+    state = createGlPipeline(pipeline, NULL, NULL, flags);
+
+    (*env)->ReleaseStringUTFChars (env, _pipeline, pipeline);
     return (intptr_t) state;
   }
 
+GstElement* getDeviceSrcElement(const char * deviceName) {
+  GList *iter;
+  // XXX: or reuse the same monitor?
+  GstDeviceMonitor *monitor = gst_device_monitor_new ();
+  GstElement *src = NULL;
+
+  gst_device_monitor_add_filter (monitor, "Video/Source", NULL);
+  iter = gst_device_monitor_get_devices (monitor);
+
+  for (; iter != NULL; iter = iter->next) {
+    GstDevice *device = iter->data;
+    gchar *display_name = gst_device_get_display_name (device);
+    if (!strcmp (display_name, deviceName)) {
+      // match, create element
+      g_free (display_name);
+      src = gst_device_create_element (device, NULL);
+      break;
+    }
+    g_free (display_name);
+  }
+
+  gst_device_monitor_stop (monitor);
+  gst_object_unref (monitor);
+
+  return src;
+}
+
 JNIEXPORT jlong JNICALL Java_gohai_glvideo_GLVideo_gstreamer_1openDevice
   (JNIEnv * env, jclass cls, jstring _deviceName, jstring _caps, jint flags) {
-    GList *iter = NULL;
-    // XXX: or reuse the same monitor?
-    GstDeviceMonitor *monitor = gst_device_monitor_new ();
-    gst_device_monitor_add_filter (monitor, "Video/Source", NULL);
+    GLVIDEO_STATE_T *state;
+    GstElement *src;
+
     const char *deviceName = (*env)->GetStringUTFChars (env, _deviceName, JNI_FALSE);
-    GstElement *src = NULL;
-
-    iter = gst_device_monitor_get_devices (monitor);
-    for (; iter != NULL; iter = iter->next) {
-      GstDevice *device = iter->data;
-      gchar *display_name = gst_device_get_display_name (device);
-      if (!strcmp (display_name, deviceName)) {
-        // match, create element
-        g_free (display_name);
-        src = gst_device_create_element (device, NULL);
-        break;
-      }
-      g_free (display_name);
-    }
-
-    gst_device_monitor_stop (monitor);
-    gst_object_unref (monitor);
-
+    src = getDeviceSrcElement(deviceName);
     (*env)->ReleaseStringUTFChars (env, _deviceName, deviceName);
 
     if (!src) {
+      // device not found
       return 0L;
     }
 
-    // XXX: continue
-    return 1;
+    const char *caps = (*env)->GetStringUTFChars (env, _caps, JNI_FALSE);
+    state = createGlPipeline(NULL, src, caps, flags);
+    (*env)->ReleaseStringUTFChars (env, _caps, caps);
+
+    return (intptr_t) state;
   }
 
 JNIEXPORT jboolean JNICALL Java_gohai_glvideo_GLVideo_gstreamer_1isAvailable
