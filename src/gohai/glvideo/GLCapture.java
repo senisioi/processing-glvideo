@@ -58,14 +58,9 @@ public class GLCapture extends GLVideo {
     // get optimal config for first device
     ArrayList<Caps> caps = Caps.getAllCapsFiltered(devices[0][2]);
     String[] configs = Caps.getConfigArraySorted(caps);
-    String chosen;
-    if (0 < configs.length) {
-      chosen = configs[0];
-    } else {
-      chosen = "";
-    }
+    String chosen = Caps.getFirstConfig(configs);
 
-    handle = gstreamer_open_device(devices[0][0], 0);
+    handle = gstreamer_open_device(devices[0][0], chosen, 0);
     if (handle == 0) {
       throw new RuntimeException("Could not open capture device " + devices[0][0]);
     } else{
@@ -104,14 +99,9 @@ public class GLCapture extends GLVideo {
         // get optimal config for this device
         ArrayList<Caps> caps = Caps.getAllCapsFiltered(devices[i][2]);
         String[] configs = Caps.getConfigArraySorted(caps);
-        String chosen;
-        if (0 < configs.length) {
-          chosen = configs[0];
-        } else {
-          chosen = "";
-        }
+        String chosen = Caps.getFirstConfig(configs);
 
-        handle = gstreamer_open_device(devices[i][0], 0);
+        handle = gstreamer_open_device(devices[i][0], chosen, 0);
         if (handle == 0) {
           throw new RuntimeException("Could not open capture device " + devices[i][0]);
         } else if (handle == 1) {
@@ -142,7 +132,7 @@ public class GLCapture extends GLVideo {
   public GLCapture(PApplet parent, String deviceName, String config) {
     super(parent, 0);
 
-    handle = gstreamer_open_device(deviceName, 0);
+    handle = gstreamer_open_device(deviceName, config, 0);
     if (handle == 0) {
       throw new RuntimeException("Could not open capture device " + deviceName);
     } else {
@@ -436,6 +426,16 @@ public class GLCapture extends GLVideo {
         ret[i] = caps.get(i).toString();
       }
       return ret;
+    }
+
+    public static String getFirstConfig(String[] configs) {
+      if (0 < configs.length) {
+        return configs[0];
+      } else {
+        // when we have no suitable configs it might still be better to pass an
+        // empty capsfilter string to GStreamer and hope it will figure things out
+        return "";
+      }
     }
   }
 }

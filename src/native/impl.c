@@ -515,7 +515,7 @@ JNIEXPORT jlong JNICALL Java_gohai_glvideo_GLVideo_gstreamer_1open_1pipeline
   }
 
 JNIEXPORT jlong JNICALL Java_gohai_glvideo_GLVideo_gstreamer_1open_1device
-  (JNIEnv * env, jclass cls, jstring _deviceName, jint flags) {
+  (JNIEnv * env, jclass cls, jstring _deviceName, jstring _caps, jint flags) {
     GList *iter = NULL;
     // XXX: or reuse the same monitor?
     GstDeviceMonitor *monitor = gst_device_monitor_new ();
