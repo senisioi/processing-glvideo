@@ -453,8 +453,18 @@ JNIEXPORT jobjectArray JNICALL Java_gohai_glvideo_GLVideo_gstreamer_1getDevices
     }
 
     /// allocate result
-    jobjectArray row = (*env)->NewObjectArray(env, 4, stringClass, 0);
-    jobjectArray ret = (*env)->NewObjectArray(env, num_devices, (*env)->GetObjectClass(env, row), 0);
+    jobjectArray row = (*env)->NewObjectArray (env, 4, stringClass, 0);
+#ifndef __APPLE__
+    jobjectArray ret = (*env)->NewObjectArray (env, num_devices, (*env)->GetObjectClass(env, row), 0);
+#else
+    // HACK: pass the stringified element as the device name on macOS
+    jobjectArray ret;
+    if (num_devices == 0) {
+      ret = (*env)->NewObjectArray (env, 1, (*env)->GetObjectClass(env, row), 0);
+    } else {
+      ret = (*env)->NewObjectArray (env, num_devices, (*env)->GetObjectClass(env, row), 0);
+    }
+#endif
     (*env)->DeleteLocalRef(env, row);
 
     int i = 0;
@@ -462,29 +472,46 @@ JNIEXPORT jobjectArray JNICALL Java_gohai_glvideo_GLVideo_gstreamer_1getDevices
       GstDevice *device = iter->data;
 
       // allocate result row
-      jobjectArray row = (*env)->NewObjectArray(env, 4, stringClass, 0);
+      jobjectArray row = (*env)->NewObjectArray (env, 4, stringClass, 0);
 
       gchar *display_name = gst_device_get_display_name (device);
-      (*env)->SetObjectArrayElement(env, row, 0, (*env)->NewStringUTF(env, display_name));
+      (*env)->SetObjectArrayElement (env, row, 0, (*env)->NewStringUTF(env, display_name));
       g_free (display_name);
 
       gchar *class = gst_device_get_device_class (device);
-      (*env)->SetObjectArrayElement(env, row, 1, (*env)->NewStringUTF(env, class));
+      (*env)->SetObjectArrayElement (env, row, 1, (*env)->NewStringUTF(env, class));
       g_free (class);
 
       GstCaps *caps = gst_device_get_caps (device);
-      (*env)->SetObjectArrayElement(env, row, 2, (*env)->NewStringUTF(env, gst_caps_to_string (caps)));
+      (*env)->SetObjectArrayElement (env, row, 2, (*env)->NewStringUTF(env, gst_caps_to_string (caps)));
       gst_caps_unref (caps);
 
       GstStructure *props = gst_device_get_properties (device);
       gchar *temp = gst_structure_to_string (props);
-      (*env)->SetObjectArrayElement(env, row, 3, (*env)->NewStringUTF(env, temp));
+      (*env)->SetObjectArrayElement (env, row, 3, (*env)->NewStringUTF(env, temp));
       g_free (temp);
       gst_structure_free (props);
 
       // add to result
-      (*env)->SetObjectArrayElement(env, ret, i, row);
+      (*env)->SetObjectArrayElement (env, ret, i, row);
     }
+
+#ifdef __APPLE__
+    // HACK: pass the stringified element as the device name on macOS
+    if (num_devices == 0) {
+      fprintf (stderr, "GLVideo: Device enumeration is currently not available on macOS. The device returned is a pure guesstimate.\n");
+      jobjectArray row = (*env)->NewObjectArray (env, 4, stringClass, 0);
+      guint major, minor, micro, nano;
+      gst_version (&major, &minor, &micro, &nano);
+      if (major == 1 && minor < 9) {
+        (*env)->SetObjectArrayElement (env, row, 0, (*env)->NewStringUTF(env, "qtkitvideosrc device-index=0"));
+      } else {
+        (*env)->SetObjectArrayElement (env, row, 0, (*env)->NewStringUTF(env, "avfvideosrc device-index=0"));
+      }
+      (*env)->SetObjectArrayElement (env, row, 2, (*env)->NewStringUTF(env, ""));
+      (*env)->SetObjectArrayElement (env, ret, 0, row);
+    }
+#endif
 
     // XXX: unclear how teardown is supposed to work
     gst_device_monitor_stop (monitor);
@@ -614,7 +641,17 @@ JNIEXPORT jlong JNICALL Java_gohai_glvideo_GLVideo_gstreamer_1openDevice
     GstElement *src;
 
     const char *deviceName = (*env)->GetStringUTFChars (env, _deviceName, JNI_FALSE);
-    src = getDeviceSrcElement(deviceName);
+#ifndef __APPLE__
+    src = getDeviceSrcElement (deviceName);
+#else
+    // HACK: pass the stringified element as the device name on macOS
+    GError *error = NULL;
+    src = gst_parse_launch (deviceName, &error);
+    if (!src) {
+      g_printerr ("Could not parse source element %s: %s\n", deviceName, error->message);
+      g_error_free (error);
+    }
+#endif
     (*env)->ReleaseStringUTFChars (env, _deviceName, deviceName);
 
     if (!src) {
@@ -623,7 +660,7 @@ JNIEXPORT jlong JNICALL Java_gohai_glvideo_GLVideo_gstreamer_1openDevice
     }
 
     const char *caps = (*env)->GetStringUTFChars (env, _caps, JNI_FALSE);
-    state = createGlPipeline(NULL, src, caps, flags);
+    state = createGlPipeline (NULL, src, caps, flags);
     (*env)->ReleaseStringUTFChars (env, _caps, caps);
 
     return (intptr_t) state;
