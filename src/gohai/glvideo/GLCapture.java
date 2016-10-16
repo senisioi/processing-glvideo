@@ -112,17 +112,17 @@ public class GLCapture extends GLVideo {
   }
 
   public GLCapture(PApplet parent, String deviceName, float fps) {
-    // XXX: wants width & height from config also?
-    this(parent, deviceName, "framerate=" + fpsToFramerate(fps));
+    // XXX: this picks e.g. 640x480 for 25 fps
+    this(parent, deviceName, "video/x-raw, framerate=" + fpsToFramerate(fps));
   }
 
   public GLCapture(PApplet parent, String deviceName, int width, int height) {
-    // XXX: wants framerate from config also?
-    this(parent, deviceName, "width=" + width + ", height=" + height);
+    // XXX: this picks e.g. 10 fps for 1280x720
+    this(parent, deviceName, "video/x-raw, width=" + width + ", height=" + height);
   }
 
   public GLCapture(PApplet parent, String deviceName, int width, int height, float fps) {
-    this(parent, deviceName, "width=" + width + ", height=" + height + ", framerate=" + fpsToFramerate(fps));
+    this(parent, deviceName, "video/x-raw, width=" + width + ", height=" + height + ", framerate=" + fpsToFramerate(fps));
   }
 
   public GLCapture(PApplet parent, String deviceName, String config) {
@@ -250,7 +250,7 @@ public class GLCapture extends GLVideo {
     }
 
     public String toString() {
-      return "width=" + width + ", height=" + height + ", framerate=" + framerate;
+      return mime + ", width=" + width + ", height=" + height + ", framerate=" + framerate;
     }
 
 
