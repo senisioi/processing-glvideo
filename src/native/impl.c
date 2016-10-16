@@ -307,6 +307,51 @@ init_pipeline_player (GLVIDEO_STATE_T * state, const gchar * pipeline)
   return TRUE;
 }
 
+static gboolean
+init_device_player (GLVIDEO_STATE_T * state, GstElement * src, const char * caps)
+{
+  state->pipeline = gst_pipeline_new (NULL);
+
+  GstElement *glup = gst_element_factory_make ("glupload", "glup");
+  GstElement *glcolorconv = gst_element_factory_make ("glcolorconvert", NULL);
+  GstElement *capsfilter = gst_element_factory_make ("capsfilter", "filter");
+  GstElement *vsink = gst_element_factory_make ("fakesink", "vsink");
+
+  gst_bin_add_many (GST_BIN (state->pipeline), src, glup, glcolorconv, capsfilter, vsink, NULL);
+  gst_element_link_many (src, glup, glcolorconv, capsfilter, vsink, NULL);
+
+  // the following is the same as in init_pipeline_player
+
+  g_object_set (capsfilter, "caps",
+      gst_caps_from_string ("video/x-raw(memory:GLMemory),format=RGBA"), NULL);
+  g_object_set (vsink, "silent", TRUE, "qos", TRUE,
+      "enable-last-sample", FALSE, "max-lateness", 20 * GST_MSECOND,
+      "signal-handoffs", TRUE, NULL);
+
+  // handle NO_SYNC flag
+  if ((state->flags & 2)) {
+    g_object_set (vsink, "sync", FALSE, NULL);
+  } else {
+    g_object_set (vsink, "sync", TRUE, NULL);
+  }
+
+  g_signal_connect (vsink, "preroll-handoff", G_CALLBACK (preroll_cb), state);
+  g_signal_connect (vsink, "handoff", G_CALLBACK (buffers_cb), state);
+
+  GstPad *pad = gst_element_get_static_pad (vsink, "sink");
+  gst_pad_add_probe (pad, GST_PAD_PROBE_TYPE_EVENT_DOWNSTREAM, events_cb, state,
+      NULL);
+  gst_pad_add_probe (pad, GST_PAD_PROBE_TYPE_QUERY_DOWNSTREAM, query_cb, state,
+      NULL);
+  gst_object_unref (pad);
+
+  // this seems to be necessary, otherwise close will complain about
+  // gst_object_unref with object == NULL
+  state->vsink = gst_object_ref (vsink);
+
+  return TRUE;
+}
+
 static void *
 glvideo_mainloop (void * data) {
   mainloop = g_main_loop_new (NULL, FALSE);
@@ -481,13 +526,17 @@ GLVIDEO_STATE_T* createGlPipeline(const char * pipeline, GstElement * src, const
     g_mutex_init (&state->buffer_lock);
 
     if (pipeline) {
-      // instantiate pipeline
+      // instantiate pipeline string
       if (!init_pipeline_player (state, pipeline)) {
         free (state);
         return NULL;
       }
     } else if (src) {
-      // XXX: continue
+      // instantiate pipeline around source element
+      if (!init_device_player (state, src, caps)) {
+        free (state);
+        return NULL;
+      }
     }
 
     // connect the bus handlers
