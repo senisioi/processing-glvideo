@@ -36,31 +36,45 @@ public class GLCapture extends GLVideo {
   public GLCapture(PApplet parent) {
     super(parent, 0);
 
-    // open the first capture device
-    if (PApplet.platform == LINUX) {
-      if (devices == null) {
-        devices = gstreamer_getDevices("Video/Source");
-      }
-
-      if (devices.length == 0) {
-        throw new RuntimeException("No capture devices found");
-      }
-
-      handle = gstreamer_open_device(devices[0][0], 0);
-      if (handle == 0) {
-        throw new RuntimeException("Could not open capture device " + devices[0][0]);
-      }
-    } else if (PApplet.platform == MACOSX) {
+    // XXX: will be removed eventually
+    if (PApplet.platform == MACOSX) {
       handle = gstreamer_open_pipeline("qtkitvideosrc device-index=0", 0);
       if (handle == 0) {
         throw new RuntimeException("Could not open capture device");
       }
-    } else {
+    } else if (PApplet.platform == WINDOWS) {
       throw new RuntimeException("Currently not supported on Windows");
+    }
+
+
+    if (devices == null) {
+      devices = gstreamer_getDevices("Video/Source");
+    }
+
+    if (devices.length == 0) {
+      throw new RuntimeException("No capture devices found");
+    }
+
+    // get optimal config for first device
+    ArrayList<Caps> caps = Caps.getAllCapsFiltered(devices[0][2]);
+    String[] configs = Caps.getConfigArraySorted(caps);
+    String chosen;
+    if (0 < configs.length) {
+      chosen = configs[0];
+    } else {
+      chosen = "";
+    }
+
+    handle = gstreamer_open_device(devices[0][0], 0);
+    if (handle == 0) {
+      throw new RuntimeException("Could not open capture device " + devices[0][0]);
+    } else{
+      throw new RuntimeException("Pipeline bringup not implemented yet");
     }
   }
 
   public GLCapture(PApplet parent, int index) {
+    // XXX: will be removed eventually
     super(parent, 0);
     String pipeline;
 
@@ -79,8 +93,36 @@ public class GLCapture extends GLVideo {
   }
 
   public GLCapture(PApplet parent, String deviceName) {
-    // XXX: get best config
-    this(parent, deviceName, "");
+    super(parent, 0);
+
+    if (devices == null) {
+      devices = gstreamer_getDevices("Video/Source");
+    }
+
+    for (int i=0; i < devices.length; i++) {
+      if (devices[i][0].equals(deviceName)) {
+        // get optimal config for this device
+        ArrayList<Caps> caps = Caps.getAllCapsFiltered(devices[i][2]);
+        String[] configs = Caps.getConfigArraySorted(caps);
+        String chosen;
+        if (0 < configs.length) {
+          chosen = configs[0];
+        } else {
+          chosen = "";
+        }
+
+        handle = gstreamer_open_device(devices[i][0], 0);
+        if (handle == 0) {
+          throw new RuntimeException("Could not open capture device " + devices[i][0]);
+        } else if (handle == 1) {
+          throw new RuntimeException("Pipeline bringup not implemented yet");
+        }
+
+        return;
+      }
+    }
+
+    throw new RuntimeException("Cannot find capture device " + deviceName);
   }
 
   public GLCapture(PApplet parent, String deviceName, float fps) {
