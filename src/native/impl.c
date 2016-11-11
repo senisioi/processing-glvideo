@@ -339,7 +339,7 @@ init_device_player (GLVIDEO_STATE_T * state, GstElement * src, const char * caps
       "signal-handoffs", TRUE, NULL);
 
   // handle NO_SYNC flag
-  if ((state->flags & 2)) {
+  if ((state->flags & gohai_glvideo_GLVideo_NO_SYNC)) {
     g_object_set (vsink, "sync", FALSE, NULL);
   } else {
     g_object_set (vsink, "sync", TRUE, NULL);
