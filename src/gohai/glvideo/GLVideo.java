@@ -42,6 +42,7 @@ public class GLVideo extends PImage {
   protected long handle = 0;
   protected Texture texture;
   protected int flags = 0;
+  protected boolean pixelsOutdated = true;
 
   /**
    *  Datatype for playing video files, which can be located in the sketch's
@@ -182,6 +183,7 @@ public class GLVideo extends PImage {
         pg.setCache(this, texture);
       } else {
         texture.glName = texId;
+        pixelsOutdated = true;
       }
     }
   }
@@ -351,21 +353,23 @@ public class GLVideo extends PImage {
   }
 
   public int get(int x, int y) {
-    // pixel array might not be initialized
-    // XXX: only call loadPixels once
-    loadPixels();
+    if (pixelsOutdated) {
+      loadPixels();
+    }
     return super.get(x, y);
   }
 
   public PImage get(int x, int y, int w, int h) {
-    // pixel array might not be initialized
-    loadPixels();
+    if (pixelsOutdated) {
+      loadPixels();
+    }
     return super.get(x, y, w, h);
   }
 
   public PImage get() {
-    // pixel array might not be initialized
-    loadPixels();
+    if (pixelsOutdated) {
+      loadPixels();
+    }
     return super.get();
   }
 
@@ -374,6 +378,7 @@ public class GLVideo extends PImage {
     super.loadPixels();
     if (texture != null) {
       texture.get(pixels);
+      pixelsOutdated = false;
     }
   }
 
