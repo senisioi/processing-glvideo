@@ -496,6 +496,7 @@ JNIEXPORT jobjectArray JNICALL Java_gohai_glvideo_GLVideo_gstreamer_1getDevices
 
       // add to result
       (*env)->SetObjectArrayElement (env, ret, i, row);
+      i++;
     }
 
 #ifdef __APPLE__
