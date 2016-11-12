@@ -349,6 +349,24 @@ public class GLVideo extends PImage {
     }
   }
 
+  public int get(int x, int y) {
+    // pixel array might not be initialized
+    loadPixels();
+    return super.get(x, y);
+  }
+
+  public PImage get(int x, int y, int w, int h) {
+    // pixel array might not be initialized
+    loadPixels();
+    return super.get(x, y, w, h);
+  }
+
+  public PImage get() {
+    // pixel array might not be initialized
+    loadPixels();
+    return super.get();
+  }
+
   public void loadPixels() {
     // this allocates the pixels array if it hasn't been
     super.loadPixels();

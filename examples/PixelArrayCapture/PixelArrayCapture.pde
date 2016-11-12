@@ -26,8 +26,6 @@ void draw() {
   background(0);
   if (video.available()) {
     video.read();
-    // populate the pixels array
-    video.loadPixels();
   }
   image(video, 0, 0, width, height);
 
@@ -38,6 +36,7 @@ void draw() {
 
   // alternatively, the pixel value can also be read like this:
   //if (0 < video.width) {
+  //  video.loadPixels();
   //  center = video.pixels[video.height/2*video.width + video.width/2];
   //}
 }
