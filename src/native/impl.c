@@ -541,7 +541,7 @@ GLVIDEO_STATE_T* createGlPipeline(const char * pipeline, GstElement * src, const
       context, GST_GL_PLATFORM_CGL, gst_gl_context_get_current_gl_api (GST_GL_PLATFORM_CGL, NULL, NULL));
 #elif GLES2
     if (!gst_display) {
-      gst_display = gst_digst_gl_display_egl_new_with_egl_display (display);
+      gst_display = gst_gl_display_egl_new_with_egl_display (display);
     } else {
       g_object_ref (gst_display);
     }
