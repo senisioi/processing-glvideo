@@ -352,6 +352,7 @@ public class GLVideo extends PImage {
 
   public int get(int x, int y) {
     // pixel array might not be initialized
+    // XXX: only call loadPixels once
     loadPixels();
     return super.get(x, y);
   }
