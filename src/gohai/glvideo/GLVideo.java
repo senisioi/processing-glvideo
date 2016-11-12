@@ -123,6 +123,7 @@ public class GLVideo extends PImage {
       // DEBUG
       //gstreamer_setEnvVar("GST_DEBUG_NO_COLOR", "1");
       //gstreamer_setEnvVar("GST_DEBUG", "3");
+      //gstreamer_setEnvVar("GST_DEBUG_DUMP_DOT_DIR", System.getProperty("user.home"));
 
       // we could also set GST_GL_API & GST_GL_PLATFORM here
 
