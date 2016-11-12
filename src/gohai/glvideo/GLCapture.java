@@ -45,7 +45,7 @@ public class GLCapture extends GLVideo {
     }
 
     // get optimal config for first device
-    ArrayList<Caps> caps = Caps.getAllCapsFiltered(devices[0][2]);
+    ArrayList<Caps> caps = Caps.getAllCapsFiltered(devices[0][2], false);
     String[] configs = Caps.getConfigArraySorted(caps);
     String chosen = Caps.getFirstConfig(configs);
 
@@ -65,7 +65,7 @@ public class GLCapture extends GLVideo {
     for (int i=0; i < devices.length; i++) {
       if (devices[i][0].equals(deviceName)) {
         // get optimal config for this device
-        ArrayList<Caps> caps = Caps.getAllCapsFiltered(devices[i][2]);
+        ArrayList<Caps> caps = Caps.getAllCapsFiltered(devices[i][2], false);
         String[] configs = Caps.getConfigArraySorted(caps);
         String chosen = Caps.getFirstConfig(configs);
 
@@ -129,7 +129,7 @@ public class GLCapture extends GLVideo {
         if (devices[i][2] == null || devices[i][2].length() == 0) {
           return new String[0];
         } else {
-          ArrayList<Caps> caps = Caps.getAllCapsFiltered(devices[i][2]);
+          ArrayList<Caps> caps = Caps.getAllCapsFiltered(devices[i][2], true);
           return Caps.getConfigArraySorted(caps);
         }
       }
@@ -142,7 +142,7 @@ public class GLCapture extends GLVideo {
     // XXX: will be removed
     // data from Macbook Air running Linux
     String all = "video/x-raw, format=(string)YUY2, width=(int)1280, height=(int)720, pixel-aspect-ratio=(fraction)1/1, interlace-mode=(string)progressive, colorimetry=(string)2:4:7:1, framerate=(fraction)10/1; video/x-raw, format=(string)YUY2, width=(int)640, height=(int)480, pixel-aspect-ratio=(fraction)1/1, interlace-mode=(string)progressive, colorimetry=(string)2:4:7:1, framerate=(fraction){ 2997/100, 25/1, 24/1, 15/1 }; video/x-raw, format=(string)YUY2, width=(int)480, height=(int)360, pixel-aspect-ratio=(fraction)1/1, interlace-mode=(string)progressive, colorimetry=(string)2:4:7:1, framerate=(fraction){ 2997/100, 25/1, 24/1, 15/1 }; video/x-raw, format=(string)YUY2, width=(int)352, height=(int)288, pixel-aspect-ratio=(fraction)1/1, interlace-mode=(string)progressive, colorimetry=(string)2:4:7:1, framerate=(fraction){ 2997/100, 25/1, 24/1, 15/1 }; video/x-raw, format=(string)YUY2, width=(int)320, height=(int)240, pixel-aspect-ratio=(fraction)1/1, interlace-mode=(string)progressive, colorimetry=(string)2:4:7:1, framerate=(fraction){ 2997/100, 25/1, 24/1, 15/1 }; video/x-raw, format=(string)YUY2, width=(int)176, height=(int)144, pixel-aspect-ratio=(fraction)1/1, interlace-mode=(string)progressive, colorimetry=(string)2:4:7:1, framerate=(fraction){ 2997/100, 25/1, 24/1, 15/1 }; video/x-raw, format=(string)YUY2, width=(int)160, height=(int)120, pixel-aspect-ratio=(fraction)1/1, interlace-mode=(string)progressive, colorimetry=(string)2:4:7:1, framerate=(fraction){ 2997/100, 25/1, 24/1, 15/1 }; image/jpeg, width=(int)1280, height=(int)720, pixel-aspect-ratio=(fraction)1/1, colorimetry=(string)2:4:7:1, framerate=(fraction){ 2997/100, 25/1, 24/1, 15/1 }; image/jpeg, width=(int)1024, height=(int)576, pixel-aspect-ratio=(fraction)1/1, colorimetry=(string)2:4:7:1, framerate=(fraction){ 2997/100, 25/1, 24/1, 15/1 }; image/jpeg, width=(int)960, height=(int)544, pixel-aspect-ratio=(fraction)1/1, colorimetry=(string)2:4:7:1, framerate=(fraction){ 2997/100, 25/1, 24/1, 15/1 }; video/x-raw, format=(string)I420, width=(int)1280, height=(int)720, pixel-aspect-ratio=(fraction)1/1, interlace-mode=(string)progressive, framerate=(fraction){ 2997/100, 25/1, 24/1, 15/1 }; video/x-raw, format=(string)I420, width=(int)1024, height=(int)576, pixel-aspect-ratio=(fraction)1/1, interlace-mode=(string)progressive, framerate=(fraction){ 2997/100, 25/1, 24/1, 15/1 }; video/x-raw, format=(string)I420, width=(int)960, height=(int)544, pixel-aspect-ratio=(fraction)1/1, interlace-mode=(string)progressive, framerate=(fraction){ 2997/100, 25/1, 24/1, 15/1 }; video/x-raw, format=(string)I420, width=(int)640, height=(int)480, pixel-aspect-ratio=(fraction)1/1, interlace-mode=(string)progressive, framerate=(fraction){ 2997/100, 25/1, 24/1, 15/1 }; video/x-raw, format=(string)I420, width=(int)480, height=(int)360, pixel-aspect-ratio=(fraction)1/1, interlace-mode=(string)progressive, framerate=(fraction){ 2997/100, 25/1, 24/1, 15/1 }; video/x-raw, format=(string)I420, width=(int)352, height=(int)288, pixel-aspect-ratio=(fraction)1/1, interlace-mode=(string)progressive, framerate=(fraction){ 2997/100, 25/1, 24/1, 15/1 }; video/x-raw, format=(string)I420, width=(int)320, height=(int)240, pixel-aspect-ratio=(fraction)1/1, interlace-mode=(string)progressive, framerate=(fraction){ 2997/100, 25/1, 24/1, 15/1 }; video/x-raw, format=(string)I420, width=(int)176, height=(int)144, pixel-aspect-ratio=(fraction)1/1, interlace-mode=(string)progressive, framerate=(fraction){ 2997/100, 25/1, 24/1, 15/1 }; video/x-raw, format=(string)I420, width=(int)160, height=(int)120, pixel-aspect-ratio=(fraction)1/1, interlace-mode=(string)progressive, framerate=(fraction){ 2997/100, 25/1, 24/1, 15/1 }; video/x-raw, format=(string)YV12, width=(int)1280, height=(int)720, pixel-aspect-ratio=(fraction)1/1, interlace-mode=(string)progressive, framerate=(fraction){ 2997/100, 25/1, 24/1, 15/1 }; video/x-raw, format=(string)YV12, width=(int)1024, height=(int)576, pixel-aspect-ratio=(fraction)1/1, interlace-mode=(string)progressive, framerate=(fraction){ 2997/100, 25/1, 24/1, 15/1 }; video/x-raw, format=(string)YV12, width=(int)960, height=(int)544, pixel-aspect-ratio=(fraction)1/1, interlace-mode=(string)progressive, framerate=(fraction){ 2997/100, 25/1, 24/1, 15/1 }; video/x-raw, format=(string)YV12, width=(int)640, height=(int)480, pixel-aspect-ratio=(fraction)1/1, interlace-mode=(string)progressive, framerate=(fraction){ 2997/100, 25/1, 24/1, 15/1 }; video/x-raw, format=(string)YV12, width=(int)480, height=(int)360, pixel-aspect-ratio=(fraction)1/1, interlace-mode=(string)progressive, framerate=(fraction){ 2997/100, 25/1, 24/1, 15/1 }; video/x-raw, format=(string)YV12, width=(int)352, height=(int)288, pixel-aspect-ratio=(fraction)1/1, interlace-mode=(string)progressive, framerate=(fraction){ 2997/100, 25/1, 24/1, 15/1 }; video/x-raw, format=(string)YV12, width=(int)320, height=(int)240, pixel-aspect-ratio=(fraction)1/1, interlace-mode=(string)progressive, framerate=(fraction){ 2997/100, 25/1, 24/1, 15/1 }; video/x-raw, format=(string)YV12, width=(int)176, height=(int)144, pixel-aspect-ratio=(fraction)1/1, interlace-mode=(string)progressive, framerate=(fraction){ 2997/100, 25/1, 24/1, 15/1 }; video/x-raw, format=(string)YV12, width=(int)160, height=(int)120, pixel-aspect-ratio=(fraction)1/1, interlace-mode=(string)progressive, framerate=(fraction){ 2997/100, 25/1, 24/1, 15/1 }; video/x-raw, format=(string)BGR, width=(int)1280, height=(int)720, pixel-aspect-ratio=(fraction)1/1, interlace-mode=(string)progressive, framerate=(fraction){ 2997/100, 25/1, 24/1, 15/1 }; video/x-raw, format=(string)BGR, width=(int)1024, height=(int)576, pixel-aspect-ratio=(fraction)1/1, interlace-mode=(string)progressive, framerate=(fraction){ 2997/100, 25/1, 24/1, 15/1 }; video/x-raw, format=(string)BGR, width=(int)960, height=(int)544, pixel-aspect-ratio=(fraction)1/1, interlace-mode=(string)progressive, framerate=(fraction){ 2997/100, 25/1, 24/1, 15/1 }; video/x-raw, format=(string)BGR, width=(int)640, height=(int)480, pixel-aspect-ratio=(fraction)1/1, interlace-mode=(string)progressive, framerate=(fraction){ 2997/100, 25/1, 24/1, 15/1 }; video/x-raw, format=(string)BGR, width=(int)480, height=(int)360, pixel-aspect-ratio=(fraction)1/1, interlace-mode=(string)progressive, framerate=(fraction){ 2997/100, 25/1, 24/1, 15/1 }; video/x-raw, format=(string)BGR, width=(int)352, height=(int)288, pixel-aspect-ratio=(fraction)1/1, interlace-mode=(string)progressive, framerate=(fraction){ 2997/100, 25/1, 24/1, 15/1 }; video/x-raw, format=(string)BGR, width=(int)320, height=(int)240, pixel-aspect-ratio=(fraction)1/1, interlace-mode=(string)progressive, framerate=(fraction){ 2997/100, 25/1, 24/1, 15/1 }; video/x-raw, format=(string)BGR, width=(int)176, height=(int)144, pixel-aspect-ratio=(fraction)1/1, interlace-mode=(string)progressive, framerate=(fraction){ 2997/100, 25/1, 24/1, 15/1 }; video/x-raw, format=(string)BGR, width=(int)160, height=(int)120, pixel-aspect-ratio=(fraction)1/1, interlace-mode=(string)progressive, framerate=(fraction){ 2997/100, 25/1, 24/1, 15/1 }; video/x-raw, format=(string)RGB, width=(int)1280, height=(int)720, pixel-aspect-ratio=(fraction)1/1, interlace-mode=(string)progressive, framerate=(fraction){ 2997/100, 25/1, 24/1, 15/1 }; video/x-raw, format=(string)RGB, width=(int)1024, height=(int)576, pixel-aspect-ratio=(fraction)1/1, interlace-mode=(string)progressive, framerate=(fraction){ 2997/100, 25/1, 24/1, 15/1 }; video/x-raw, format=(string)RGB, width=(int)960, height=(int)544, pixel-aspect-ratio=(fraction)1/1, interlace-mode=(string)progressive, framerate=(fraction){ 2997/100, 25/1, 24/1, 15/1 }; video/x-raw, format=(string)RGB, width=(int)640, height=(int)480, pixel-aspect-ratio=(fraction)1/1, interlace-mode=(string)progressive, framerate=(fraction){ 2997/100, 25/1, 24/1, 15/1 }; video/x-raw, format=(string)RGB, width=(int)480, height=(int)360, pixel-aspect-ratio=(fraction)1/1, interlace-mode=(string)progressive, framerate=(fraction){ 2997/100, 25/1, 24/1, 15/1 }; video/x-raw, format=(string)RGB, width=(int)352, height=(int)288, pixel-aspect-ratio=(fraction)1/1, interlace-mode=(string)progressive, framerate=(fraction){ 2997/100, 25/1, 24/1, 15/1 }; video/x-raw, format=(string)RGB, width=(int)320, height=(int)240, pixel-aspect-ratio=(fraction)1/1, interlace-mode=(string)progressive, framerate=(fraction){ 2997/100, 25/1, 24/1, 15/1 }; video/x-raw, format=(string)RGB, width=(int)176, height=(int)144, pixel-aspect-ratio=(fraction)1/1, interlace-mode=(string)progressive, framerate=(fraction){ 2997/100, 25/1, 24/1, 15/1 }; video/x-raw, format=(string)RGB, width=(int)160, height=(int)120, pixel-aspect-ratio=(fraction)1/1, interlace-mode=(string)progressive, framerate=(fraction){ 2997/100, 25/1, 24/1, 15/1 }";
-    ArrayList<Caps> caps = Caps.getAllCapsFiltered(all);
+    ArrayList<Caps> caps = Caps.getAllCapsFiltered(all, true);
     return Caps.getConfigArraySorted(caps);
   }
 
@@ -235,12 +235,18 @@ public class GLCapture extends GLVideo {
       return caps;
     }
 
-    public static ArrayList<Caps> getAllCapsFiltered(String full) {
+    public static ArrayList<Caps> getAllCapsFiltered(String full, boolean verbose) {
       ArrayList<Caps> caps = new ArrayList<Caps>();
       if (full != null && 0 < full.length()) {
         String[] lines = full.split("; ");
         for (int i=0; i < lines.length; i++) {
-          caps.addAll(getCapsFiltered(lines[i]));
+          try {
+            caps.addAll(getCapsFiltered(lines[i]));
+          } catch (Exception e) {
+            if (verbose) {
+              System.err.println("Cannot parse capability: " + lines[i]);
+            }
+          }
         }
       }
       return caps;
