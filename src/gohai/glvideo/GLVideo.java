@@ -83,6 +83,20 @@ public class GLVideo extends PImage {
     this(parent, pipeline, 0);
   }
 
+  public static void enableDebug() {
+    enableDebug(3);
+  }
+
+  public static void enableDebug(int level) {
+    System.loadLibrary("glvideo");
+    gstreamer_setEnvVar("GST_DEBUG_NO_COLOR", "1");
+    gstreamer_setEnvVar("GST_DEBUG", Integer.toString(level));
+    if (2 < level) {
+      System.out.println("A pipeline diagram will be saved as " + System.getProperty("user.home") + File.separator + "playing.dot.");
+      gstreamer_setEnvVar("GST_DEBUG_DUMP_DOT_DIR", System.getProperty("user.home"));
+    }
+  }
+
   /**
    *  Load the native glvideo library, setup the environment for GStreamer and initialize it
    *  through gstreamer_init
@@ -120,11 +134,6 @@ public class GLVideo extends PImage {
       } else {
         throw new RuntimeException("Windows support is not implemented currently");
       }
-
-      // DEBUG
-      //gstreamer_setEnvVar("GST_DEBUG_NO_COLOR", "1");
-      //gstreamer_setEnvVar("GST_DEBUG", "3");
-      //gstreamer_setEnvVar("GST_DEBUG_DUMP_DOT_DIR", System.getProperty("user.home"));
 
       // we could also set GST_GL_API & GST_GL_PLATFORM here
 

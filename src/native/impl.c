@@ -373,9 +373,11 @@ static void
 wait_for_state_change (GLVIDEO_STATE_T * state) {
   // this waits until any asynchronous state changes have completed (or failed)
   gst_element_get_state (state->pipeline, NULL, NULL, GST_CLOCK_TIME_NONE);
+
   // DEBUG: output a .dot file with the current pipeline, trigger with one of many getters that call wait_for_state_change
-  // DEBUG: make sure to set GST_DEBUG_DUMP_DOT_DIR environment variable as well
-  //GST_DEBUG_BIN_TO_DOT_FILE (GST_BIN (state->pipeline), GST_DEBUG_GRAPH_SHOW_ALL, "playing");
+  if (getenv ("GST_DEBUG_DUMP_DOT_DIR")) {
+    GST_DEBUG_BIN_TO_DOT_FILE (GST_BIN (state->pipeline), GST_DEBUG_GRAPH_SHOW_ALL, "playing");
+  }
 }
 
 JNIEXPORT void JNICALL Java_gohai_glvideo_GLVideo_gstreamer_1setEnvVar
