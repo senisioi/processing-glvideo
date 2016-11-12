@@ -146,7 +146,7 @@ events_cb (GstPad * pad, GstPadProbeInfo * probe_info, gpointer user_data)
       }
       gst_event_parse_caps (event, &state->caps);
       if (state->caps) {
-        // DEBUG
+        // XXX: remove
         gchar * temp = gst_caps_to_string (state->caps);
         fprintf (stdout, "Final caps: %s\n", temp);
         fflush (stdout);
