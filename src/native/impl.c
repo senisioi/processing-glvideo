@@ -487,10 +487,12 @@ JNIEXPORT jobjectArray JNICALL Java_gohai_glvideo_GLVideo_gstreamer_1getDevices
       gst_caps_unref (caps);
 
       GstStructure *props = gst_device_get_properties (device);
-      gchar *temp = gst_structure_to_string (props);
-      (*env)->SetObjectArrayElement (env, row, 3, (*env)->NewStringUTF(env, temp));
-      g_free (temp);
-      gst_structure_free (props);
+      if (props) {
+        gchar *temp = gst_structure_to_string (props);
+        (*env)->SetObjectArrayElement (env, row, 3, (*env)->NewStringUTF(env, temp));
+        g_free (temp);
+        gst_structure_free (props);
+      }
 
       // add to result
       (*env)->SetObjectArrayElement (env, ret, i, row);
