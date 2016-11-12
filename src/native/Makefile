@@ -68,7 +68,7 @@ iface.h:
 clean:
 	rm -f $(TARGET) $(OBJS)
 
-install_macosx_libraries:
+install_macosx_libraries: $(TARGET)
 	rm -rf ../../library/macosx/*
 	# download and install latest gstreamer-1.0 package for x86_64 from
 	# https://gstreamer.freedesktop.org/data/pkg/osx/
@@ -82,6 +82,8 @@ install_macosx_libraries:
 	cp /Library/Frameworks/GStreamer.framework/Libraries/gstreamer-1.0/*.so ../../library/macosx/gstreamer-1.0
 	cd ../../library/macosx/gstreamer-1.0 && osxrelocator . "/Library/Frameworks/GStreamer.framework/Versions/1.0/lib" "@loader_path/../" && cd ../../../src/native
 	# install name is not relevant for those
+	# libglvideo.so is required for the python script below
+	cp libglvideo.so ../../library/macosx/libglvideo.jnilib
 	python ./macosx_remove_extra_libs.py
 
 .PHONY: iface.h clean install_macosx_libraries
