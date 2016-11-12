@@ -5,10 +5,11 @@ PLATFORM := $(shell uname -s)
 RPI := $(shell test -e /opt/vc/include; echo $$?)
 
 
-CFLAGS := -fPIC -O2 -mtune=native
+CFLAGS := -fPIC -O2
 ifeq ($(RPI),0)
 	# Raspberry Pi
 	CFLAGS += -DGLES2 -DRPI
+	CFLAGS += -march=armv6zk -mcpu=arm1176jzf-s -mfloat-abi=hard -mfpu=vfp
 	CFLAGS += -I$(shell dirname $(shell realpath $(shell which javac)))/../include
 	CFLAGS += -I$(shell dirname $(shell realpath $(shell which javac)))/../include/linux
 	CFLAGS += -I/opt/vc/include
