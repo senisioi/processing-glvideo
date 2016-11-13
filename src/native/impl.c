@@ -285,7 +285,7 @@ init_pipeline_player (GLVIDEO_STATE_T * state, const gchar * pipeline)
   }
 
   g_object_set (capsfilter, "caps",
-      gst_caps_from_string ("video/x-raw(memory:GLMemory),format=RGBA"), NULL);
+      gst_caps_from_string ("video/x-raw(memory:GLMemory),format=RGBA,texture-target=2D"), NULL);
   g_object_set (vsink, "silent", TRUE, "qos", TRUE,
       "enable-last-sample", FALSE, "max-lateness", 20 * GST_MSECOND,
       "signal-handoffs", TRUE, NULL);
@@ -333,7 +333,7 @@ init_device_player (GLVIDEO_STATE_T * state, GstElement * src, const char * caps
   // the following is the same as in init_pipeline_player
 
   g_object_set (capsfilter, "caps",
-      gst_caps_from_string ("video/x-raw(memory:GLMemory),format=RGBA"), NULL);
+      gst_caps_from_string ("video/x-raw(memory:GLMemory),format=RGBA,texture-target=2D"), NULL);
   g_object_set (vsink, "silent", TRUE, "qos", TRUE,
       "enable-last-sample", FALSE, "max-lateness", 20 * GST_MSECOND,
       "signal-handoffs", TRUE, NULL);
