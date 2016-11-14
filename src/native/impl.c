@@ -401,6 +401,20 @@ JNIEXPORT jboolean JNICALL Java_gohai_glvideo_GLVideo_gstreamer_1init
       return JNI_FALSE;
     }
 
+    // check if the compile-time and runtime versions match
+    guint major, minor, micro, nano;
+    gst_version (&major, &minor, &micro, &nano);
+    if (major != GST_VERSION_MAJOR || minor != GST_VERSION_MINOR) {
+      fprintf (stderr, "The version of GStreamer on your system (%u.%u.%u) does not match the version "
+                       "this library was compiled against (%u.%u). This is very likely to cause issues. "
+                       "Consider compiling this library yourself, using the sources from "
+                       "https://github.com/gohai/processing-glvideo.git\n",
+                       major, minor, micro, GST_VERSION_MAJOR, GST_VERSION_MINOR);
+    }
+    // we could also try to ship different builds of libglvideo, compiled against different versions
+    // in this case we should return the system's version from JNI to Java and see if there is a way
+    // to load in a replacement
+
     // save the current EGL context
 #ifdef __APPLE__
     context = gst_gl_context_cocoa_get_current_context ();
