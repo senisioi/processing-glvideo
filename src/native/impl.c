@@ -520,13 +520,7 @@ JNIEXPORT jobjectArray JNICALL Java_gohai_glvideo_GLVideo_gstreamer_1getDevices
     if (num_devices == 0) {
       fprintf (stderr, "GLVideo: Device enumeration is currently not available on macOS. The device returned is a pure guesstimate.\n");
       jobjectArray row = (*env)->NewObjectArray (env, 4, stringClass, 0);
-      guint major, minor, micro, nano;
-      gst_version (&major, &minor, &micro, &nano);
-      if (major == 1 && minor < 9) {
-        (*env)->SetObjectArrayElement (env, row, 0, (*env)->NewStringUTF(env, "qtkitvideosrc device-index=0"));
-      } else {
-        (*env)->SetObjectArrayElement (env, row, 0, (*env)->NewStringUTF(env, "avfvideosrc device-index=0"));
-      }
+      (*env)->SetObjectArrayElement (env, row, 0, (*env)->NewStringUTF(env, "avfvideosrc device-index=0"));
       (*env)->SetObjectArrayElement (env, row, 2, (*env)->NewStringUTF(env, ""));
       (*env)->SetObjectArrayElement (env, ret, 0, row);
     }
