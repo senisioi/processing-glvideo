@@ -5,7 +5,7 @@ PLATFORM := $(shell uname -s)
 RPI := $(shell test -e /opt/vc/include; echo $$?)
 
 
-CFLAGS := -fPIC -O2
+CFLAGS := -fPIC -O2 -ffast-math
 ifeq ($(RPI),0)
 	# Raspberry Pi
 	CFLAGS += -DGLES2 -DRPI
