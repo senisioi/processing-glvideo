@@ -162,6 +162,11 @@ public class GLCapture extends GLVideo {
     }
   }
 
+  public void start() {
+    // emulate the start method of the original Video library
+    play();
+  }
+
 
   static class Caps implements Cloneable, Comparable {
 
