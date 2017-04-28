@@ -19,7 +19,7 @@ void setup() {
 
   // this will use the first recognized camera
   video = new GLCapture(this);
-  video.play();
+  video.start();
 }
 
 void draw() {

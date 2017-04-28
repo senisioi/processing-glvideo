@@ -33,7 +33,7 @@ void setup() {
   //video = new GLCapture(this, devices[0], 640, 480, 25);
   //video = new GLCapture(this, devices[0], configs[0]);
 
-  video.play();
+  video.start();
 }
 
 void draw() {
