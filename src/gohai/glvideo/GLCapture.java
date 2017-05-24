@@ -122,6 +122,7 @@ public class GLCapture extends GLVideo {
           return new String[0];
         } else {
           String[] lines = filterCaps(devices[i][2].split("; "));
+          System.out.println("The format returned by configs() is informational only and might change in future versions of the library.");
           return lines;
         }
       }
