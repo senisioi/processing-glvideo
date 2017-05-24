@@ -174,10 +174,17 @@ query_cb (GstPad * pad, GstPadProbeInfo * info, gpointer user_data)
   switch (GST_QUERY_TYPE (query)) {
     case GST_QUERY_CONTEXT:
     {
+#if GST_VERSION_MAJOR <= 1 && GST_VERSION_MINOR <= 10
       if (gst_gl_handle_context_query (state->pipeline, query,
               (GstGLDisplay **) & gst_display,
               (GstGLContext **) & state->gl_context))
         return GST_PAD_PROBE_HANDLED;
+#else
+      if (gst_gl_handle_context_query (state->pipeline, query,
+              (GstGLDisplay *) gst_display, NULL,
+              (GstGLContext *) state->gl_context))
+        return GST_PAD_PROBE_HANDLED;
+#endif
       break;
     }
     default:
