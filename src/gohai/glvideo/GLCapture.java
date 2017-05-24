@@ -23,6 +23,7 @@
 package gohai.glvideo;
 
 import processing.core.*;
+import java.util.ArrayList;
 
 /**
  *  @webref
@@ -120,14 +121,33 @@ public class GLCapture extends GLVideo {
         if (devices[i][2] == null || devices[i][2].length() == 0) {
           return new String[0];
         } else {
-          String[] lines = devices[i][2].split("; ");
-          // XXX: filter
+          String[] lines = filterCaps(devices[i][2].split("; "));
           return lines;
         }
       }
     }
 
     throw new RuntimeException("Cannot find capture device " + deviceName);
+  }
+
+  protected static String[] filterCaps(String in[]) {
+    ArrayList<String> filtered = new ArrayList<String>();
+    String needle;
+
+    // the first format should be the most preferable (presumably native) one
+    // return all caps with the same format
+    if (in.length == 0) {
+      return new String[]{};
+    } else {
+      needle = in[0].substring(0, in[0].indexOf(',', in[0].indexOf(',') + 1) + 1);
+    }
+
+    for (int i=0; i < in.length; i++) {
+      if (in[i].startsWith(needle)) {
+        filtered.add(in[i]);
+      }
+    }
+    return filtered.toArray(new String[filtered.size()]);
   }
 
   public static float framerateToFps(String fraction) {
