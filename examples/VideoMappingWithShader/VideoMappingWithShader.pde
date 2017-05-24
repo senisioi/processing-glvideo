@@ -1,6 +1,7 @@
 /**
  *  On Raspberry Pi: increase your GPU memory, to avoid
  *  OpenGL error 1285 at top endDraw(): out of memory
+ *  Contributed by @Sardtok
  */
 
 import gohai.glvideo.GLMovie;
