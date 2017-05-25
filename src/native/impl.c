@@ -39,7 +39,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <gst/gst.h>
 #include <gst/gl/gl.h>
 #ifdef __APPLE__
-#include <gst/gl/cocoa/gstglcontext_cocoa.h>
 #elif GLES2
 #include <gst/gl/egl/gstgldisplay_egl.h>
 #else
@@ -424,7 +423,7 @@ JNIEXPORT jboolean JNICALL Java_gohai_glvideo_GLVideo_gstreamer_1init
 
     // save the current EGL context
 #ifdef __APPLE__
-    context = gst_gl_context_cocoa_get_current_context ();
+    context = gst_gl_context_get_current_gl_context (GST_GL_PLATFORM_CGL);
 #elif GLES2
     display = eglGetCurrentDisplay ();
     surface = eglGetCurrentSurface (0);

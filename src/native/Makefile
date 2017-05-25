@@ -73,8 +73,6 @@ install_macosx_libraries: $(TARGET)
 	rm -rf ../../library/macosx/*
 	# download and install latest gstreamer-1.0 devel package for x86_64 from
 	# https://gstreamer.freedesktop.org/data/pkg/osx/
-	# put https://raw.githubusercontent.com/GStreamer/gst-plugins-bad/master/gst-libs/gst/gl/cocoa/gstglcontext_cocoa.h into
-	# /Library/Frameworks/GStreamer.framework/Versions/1.0/Headers/gst/gl/cocoa
 	mkdir -p ../../library/macosx
 	cp /Library/Frameworks/GStreamer.framework/Libraries/*.dylib ../../library/macosx
 	# pip install osxrelocator
