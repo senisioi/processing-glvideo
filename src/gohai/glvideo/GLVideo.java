@@ -23,6 +23,8 @@
 package gohai.glvideo;
 
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import processing.core.*;
 import processing.opengl.*;
 
@@ -88,7 +90,7 @@ public class GLVideo extends PImage {
   }
 
   public static void enableDebug(int level) {
-    System.loadLibrary("glvideo");
+    loadNativeLibrary();
     gstreamer_setEnvVar("GST_DEBUG_NO_COLOR", "1");
     gstreamer_setEnvVar("GST_DEBUG", Integer.toString(level));
     if (2 < level) {
@@ -106,7 +108,7 @@ public class GLVideo extends PImage {
     boolean use_host_gstreamer = false;
 
     if (!loaded) {
-      System.loadLibrary("glvideo");
+      loadNativeLibrary();
       loaded = true;
 
       String jar = GLVideo.class.getProtectionDomain().getCodeSource().getLocation().getPath();
@@ -147,6 +149,32 @@ public class GLVideo extends PImage {
         System.err.println("Make sure the following GStreamer packages are installed on the host system: gstreamer 1.x, gst-plugins-base, gst-plugins-good, gst-plugins-bad, gst-ffmpeg or gst-libav.");
       }
       throw new RuntimeException("Could not load GStreamer");
+    }
+  }
+
+  protected static void loadNativeLibrary() {
+    // Raspbian August 2017 renamed libraries gstgl depends on
+    workaroundBrcm();
+    System.loadLibrary("glvideo");
+  }
+
+  protected static void workaroundBrcm() {
+    File new_lib = new File("/opt/vc/lib/libbrcmGLESv2.so");
+
+    String jar = GLVideo.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+    String nativeLib = jar.substring(0, jar.lastIndexOf(File.separatorChar));
+    File symlink = new File(nativeLib + "/linux-armv6hf/libGLESv2.so");
+
+    if (new_lib.isFile() && !symlink.isFile()) {
+      // attempt to create symlinks that make it compatible
+      // with earlier Raspbian releases
+      try {
+        Files.createSymbolicLink(Paths.get(nativeLib + "/linux-armv6hf/libGLESv2.so"), Paths.get("/opt/vc/lib/libbrcmGLESv2.so"));
+        Files.createSymbolicLink(Paths.get(nativeLib + "/linux-armv6hf/libEGL.so"), Paths.get("/opt/vc/lib/libbrcmEGL.so"));
+        System.out.println("GLVideo: Created compatibility symlinks");
+      } catch (Exception e) {
+        System.err.println("GLVideo: Error creating compatibility symlinks");
+      }
     }
   }
 
