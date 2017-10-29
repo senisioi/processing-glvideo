@@ -5,7 +5,7 @@ PLATFORM := $(shell uname -s)
 RPI := $(shell test -e /opt/vc/include; echo $$?)
 
 
-CFLAGS := -fPIC -O2 -ffast-math
+CFLAGS := -fPIC -g -O2 -ffast-math
 ifeq ($(RPI),0)
 	# Raspberry Pi
 	CFLAGS += -DGLES2 -DRPI
@@ -43,9 +43,10 @@ ifeq ($(RPI),0)
 else ifeq ($(PLATFORM),Linux)
 	# regular Linux
 	LDFLAGS += $(shell pkg-config gstreamer-1.0 --libs)
+	LDFLAGS += $(shell pkg-config gstreamer-gl-1.0 --libs)
 	# pkg-config for gstreamer-gl-1.0 on Fedora pulls in a lot of unrelated dependencies, e.g. wayland
 	# try this instead
-	LDFLAGS += -lgstgl-1.0 -lGL
+	# LDFLAGS += -lgstgl-1.0 -lGL
 	TARGET_DIR = linux64
 	TARGET_FILE = $(TARGET)
 else ifeq ($(PLATFORM),Darwin)
@@ -59,7 +60,7 @@ else ifeq ($(PLATFORM),Darwin)
 endif
 
 $(TARGET): $(OBJS)
-	$(CC) $(CFLAGS) $(LDFLAGS) $^ -o $@
+	$(CC) $(CFLAGS) $^ -o $@ $(LDFLAGS)
 	mkdir -p ../../library/$(TARGET_DIR)
 	cp $(TARGET) ../../library/$(TARGET_DIR)/$(TARGET_FILE)
 

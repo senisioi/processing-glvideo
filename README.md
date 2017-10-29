@@ -1,3 +1,10 @@
+## Compiling 
+On ubuntu x64 the linking flags have to stay at the end
+```bash
+cd src/native && make
+cd ../.. && ant && and dist
+```
+
 ## OpenGL video playback for Processing
 
 This library makes use of GStreamer and OpenGL hardware (or software) acceleration to display video in Processing's P2D or P3D renderers. It should run on macOS, Linux and Raspbian.
