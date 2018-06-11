@@ -90,7 +90,7 @@ Install the GStreamer 1.x software from your distribution's repositories. The ac
 `gstreamer1.0 gstreamer1.0-plugins-base gstreamer1.0-plugins-good gstreamer1.0-gst-plugins-bad` and either `gstreamer1.0-ffmpeg` or `gstreamer1.0-libav`
 
 Things might not work if the gstreamer version is too recent so it's better to just compile it from scratch. 
-You could get encounter, the video might not run slick or even the following error:
+You could encounter crashes, the video might not run slick or even the following error:
 ```
 OpenGL error 1282 at bot endDraw()
 ```
