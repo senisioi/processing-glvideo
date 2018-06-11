@@ -85,14 +85,11 @@ This library makes use of GStreamer and OpenGL hardware (or software) accelerati
 
 ### Linux
 
-Install the GStreamer 1.x software from your distribution's repositories. The actual packages might be named differently between distributions, but you want the the equivalents of:
-
-`gstreamer1.0 gstreamer1.0-plugins-base gstreamer1.0-plugins-good gstreamer1.0-gst-plugins-bad` and either `gstreamer1.0-ffmpeg` or `gstreamer1.0-libav`
-
-Things might not work if the gstreamer version is too recent so it's better to just compile it from scratch. 
-You could encounter crashes, the video might not run slick or even the following error:
+If you already compiled gstreamer from scratch, no need to install any other packages. Install the GStreamer 1.x software from your distribution's repositories might not work, especially if the gstreamer version is too recent. It is always better to just compile it from scratch. You could encounter crashes, the video might not run slick or even the following error:
 ```
 OpenGL error 1282 at bot endDraw()
 ```
 
 Additional plugins, such as `omx` or `vaapi`, could additionally unlock hardware-accelerated decoding, but it is advised to install those from the source.
+The actual packages from the repositories are:
+`gstreamer1.0 gstreamer1.0-plugins-base gstreamer1.0-plugins-good gstreamer1.0-gst-plugins-bad` and either `gstreamer1.0-ffmpeg` or `gstreamer1.0-libav`
